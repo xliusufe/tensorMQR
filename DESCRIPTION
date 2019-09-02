@@ -1,0 +1,26 @@
+Package: tensorMQR1
+Type: Package
+Title: tensorMQR1
+Version: 1.0
+Date: 2019-09-01
+Authors@R: c(person(given = "Xu", family = "Liu", role = c("aut","cre"), email = "liu.xu@sufe.edu.cn"),
+             person(given = "Jian", family = "Huang", role = "aut"),
+             person(given = "Heng", family = "Lian", role = "aut"),
+             person(given = "Xinyuan", family = "Song", role = "aut"),
+             person(given = "Yuling", family = "Jiao", role = "aut"))
+Author: Xu Liu [aut,cre], 
+        Jian Huang [aut],
+        Heng Lian [aut],
+        Xinyuan Song [aut],
+        Yuling Jiao [aut]
+Maintainer: Xu Liu <liu.xu@sufe.edu.cn>
+Description: Symmetric tensor estimation for multiresponse quadratic regression. The number of predictors can be diverged as sample size increases, in which the penalty LASSO, MCP or SCAD can be used.
+License: GPL (>= 2)
+Imports: Rcpp (>= 0.11.15), RcppEigen (>= 0.3.2.3.0)
+LinkingTo: Rcpp, RcppEigen
+RoxygenNote: 6.0.1
+NeedsCompilation: yes
+Repository: github
+URL: https://github.com/xliusufe/tensorMQR1
+Encoding: UTF-8
+Packaged: 2019-09-01 01:35:21 UTC; admin

@@ -1,0 +1,10 @@
+importFrom("stats", "quantile", "rnorm", "runif")
+useDynLib(tensorMQR1, .registration=TRUE)
+exportPattern("^[[:alpha:]]+")
+importFrom(Rcpp, evalCpp)
+export(mqr,
+       mqr_dr,
+       mqr_sparse,
+       mqr_sparse_dr,
+       TransferModalUnfoldings,
+       generateData)
