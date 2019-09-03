@@ -6,6 +6,10 @@ mqr <- function(Y,X,r1=NULL,r3=NULL,SUV=NULL,eps=1e-6,max_step=20){
   p <- dim(X)[2]
   if(is.null(r1)) r1 = 2
   if(is.null(r3)) r3 = 2
+  if(r3>q){ 
+    r3=q
+    warning("r3 should be not greater than q! Reset r3=q.")
+  }
   if(is.null(SUV)){
     set.seed(1)
     U = rbind(diag(r1), matrix(0,p-r1,r1))
