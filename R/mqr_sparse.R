@@ -6,9 +6,13 @@ mqr_sparse <-
     p <- dim(X)[2]
     if(is.null(r1)) r1 <- 2 
     if(is.null(r3)) r3 <- 2
+    if(r3>q){ 
+      r3=q
+      warning("r3 should be not greater than q! Reset r3=q.")
+    }
     r2 <- r1
     opts = list(utol=1e-4,ftol=eps,Pitol=1e-4,tau_min=1e-3,eta=0.1,tiny=1e-13,gamma=0.85,rhols=1e-4,
-                max_step=max_step,max_step1=max_step1,is_LR=1,n=n,r1=r1,r2=r2,r3=r3,p=p,q=q)    
+                max_step=max_step,max_step1=max_step1,is_LR=1,n=n,r1=r1,r2=r2,r3=r3,p=p,q=q,onStiefel=1)    
     if (penalty == "LASSO") pen <- 1
     if (penalty == "MCP")   pen <- 2 
     if (penalty=="SCAD"){    
@@ -42,8 +46,8 @@ mqr_sparse <-
     }
     else  nlam = length(lambda)
     #print(lambda)
-    opts_pen = list(pen=pen,nlam=nlam,lam_max=1,lam_min=lam_min,gamma_pen=gamma,alpha=alpha,dfmax=dfmax,
-                    gamma_tanh=1000,thresh=thresh,isPenU=isPenU)
+    opts_pen = list(pen=pen,nlam=nlam,lam_max=1,lam_min=lam_min,gamma_pen=gamma,alpha=alpha,dfmax=dfmax,gamma_tanh=1000,
+                    thresh=thresh,isPenU=isPenU,isPenColumn=isPenColumn,delta=1,max_step=5,max_step1=10,isFISC=1)
     #---------------- The selection by BIC or CV  ---------------------# 
     if(method=="BIC"){
       if(isPenColumn)

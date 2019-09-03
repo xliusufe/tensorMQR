@@ -127,6 +127,6 @@ Symmetric Tensor Estimation for Quadratic Regression.
   D3 <- matrix(runif(72, 0.7, 1), 2, 36) # tensor with size 6*6*2
   mydata <- generateData(200, 2, 6, 6, D3)
    
-  fit <- mam_sparse(mydata$Y, mydata$X)
+  fit <- mqr_sparse(mydata$Y, mydata$X)
   D3hat <- fit$Dnew
 }

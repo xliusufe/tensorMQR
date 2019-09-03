@@ -8,6 +8,10 @@ mqr_sparse_dr <-
     p <- dim(X)[2]
     if(is.null(r1_index)) r1_index = 1:min(floor(log(n)),p)
     if(is.null(r3_index)) r3_index = 1:min(floor(log(n)),q)
+    if(max(r3_index)>q){ 
+      r3_index = 1:min(floor(log(n)),q)
+      warning("max(r3_index) should be not greater than q! Reset r3_index = 1:min(floor(log(n)),q).")
+    }
     if (penalty == "LASSO") pen <- 1
     if (penalty == "MCP")   pen <- 2 
     if (penalty=="SCAD"){    
