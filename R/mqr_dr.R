@@ -1,7 +1,7 @@
 
 ##--------------main by BIC without sparsity----------------------##
 mqr_dr <- function(Y,X,r1_index=NULL,r3_index=NULL,method="BIC",ncv=10,SUV=NULL,
-                   eps=1e-6,max_step=20){
+                   eps=1e-6,max_step=20,max_step1=20){
 
   n <- dim(Y)[1]
   q <- dim(Y)[2]
@@ -28,7 +28,7 @@ mqr_dr <- function(Y,X,r1_index=NULL,r3_index=NULL,method="BIC",ncv=10,SUV=NULL,
     warning("maximum number of index sequences of r1 and r3 must not be larger than columns of U and V, respectively !")
   }
   opts = list(utol=1e-4,ftol=eps,Pitol=1e-4,tau_min=1e-3,eta=0.1,tiny=1e-13,gamma=0.85,rhols=1e-4,
-              max_step=max_step,max_step1=max_step,is_LR=1,n=n,r1=2,r2=2,r3=2,p=p,q=q)
+              max_step=max_step,max_step1=max_step1,is_LR=1,n=n,r1=2,r2=2,r3=2,p=p,q=q)
   if(method=="BIC") fit_dr = mqr_bic(Y,X,r1_index,r3_index,S,U,V,opts)
   if(method=="CV")  fit_dr = mqr_cv(Y,X,ncv,r1_index,r3_index,S,U,V,opts)
   return(fit_dr)

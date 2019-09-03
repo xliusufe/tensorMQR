@@ -1,6 +1,6 @@
 
 ##--------------main by BIC without sparsity----------------------##
-mqr <- function(Y,X,r1=NULL,r3=NULL,SUV=NULL,eps=1e-6,max_step=20){
+mqr <- function(Y,X,r1=NULL,r3=NULL,SUV=NULL,eps=1e-6,max_step=20,max_step1=20){
   n <- dim(Y)[1]
   q <- dim(Y)[2]
   p <- dim(X)[2]
@@ -22,7 +22,7 @@ mqr <- function(Y,X,r1=NULL,r3=NULL,SUV=NULL,eps=1e-6,max_step=20){
     S = SUV$S
   }
   opts = list(utol=1e-4,ftol=eps,Pitol=1e-4,tau_min=1e-3,eta=0.1,tiny=1e-13,gamma=0.85,rhols=1e-4,
-              max_step=max_step,max_step1=max_step,is_LR=1,n=n,r1=r1,r2=r1,r3=r3,p=p,q=q)  
+              max_step=max_step,max_step1=max_step1,is_LR=1,n=n,r1=r1,r2=r1,r3=r3,p=p,q=q)  
   fit = Estimation(Y,X,as.matrix(S),as.matrix(U),as.matrix(V),opts)
   return(list(Dnew=fit$Dnew, 
               rss=fit$likhd,

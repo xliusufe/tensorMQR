@@ -56,7 +56,7 @@ mqr_sparse(Y, X, r1 = NULL, r3 = NULL, method="BIC",ncv=10,isPenU=0,isPenColumn=
               
   \item{maxstep}{Maximum number of iterations. Default is \code{20}.}
   
-  \item{maxstep1}{The maximum iterates number of coordinate descent method.  
+  \item{maxstep1}{The maximum iterates number of the steepest gradient descent method.  
                   Default is \code{20}.}
                  
   \item{thresh}{The threshhold to numerically determine which coefficients are zeros. Since the steepest projected 

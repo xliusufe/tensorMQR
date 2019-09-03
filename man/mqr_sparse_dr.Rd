@@ -63,7 +63,8 @@ mqr_sparse_dr(Y, X, r1_index = NULL, r3_index = NULL, method = "BIC", ncv = 10, 
               
   \item{maxstep}{Maximum number of iterations. Default is 20.}
   
-  \item{maxstep1}{The maximum iterates number of coordinate descent method.  Default is 20.}
+  \item{maxstep1}{The maximum iterates number of the steepest gradient descent method.  
+                  Default is \code{20}.}
 
   \item{thresh}{The threshhold to numerically determine which coefficients are zeros. Since the steepest projected 
                 gradient descent method with the approximated penalty can not shrink the estimated row of true zero row 
