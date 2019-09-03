@@ -1,6 +1,6 @@
 
 ##--------------main by BIC without sparsity----------------------##
-mqr <- function(Y,X,r1=NULL,r3=NULL,SUV,eps=1e-6,max_step=20){
+mqr <- function(Y,X,r1=NULL,r3=NULL,SUV=NULL,eps=1e-6,max_step=20){
   n <- dim(Y)[1]
   q <- dim(Y)[2]
   p <- dim(X)[2]
