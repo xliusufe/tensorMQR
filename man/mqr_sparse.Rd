@@ -10,9 +10,10 @@
 }
 
 \usage{
-mqr_sparse(Y, X, r1 = NULL, r3 = NULL, method="BIC",ncv=10,isPenU=0,isPenColumn=1, penalty = "LASSO",
-           lambda = NULL, SUV = NULL, nlam = 50, lam_min = 1e-4, eps = 1e-6, maxstep = 20, 
-           maxstep1 = 20, thresh=1e-6, gamma = 2, dfmax = NULL, alpha = 1)
+mqr_sparse(Y, X, r1 = NULL, r3 = NULL, method="BIC",ncv=10,isPenU=0,isPenColumn=1, 
+           penalty = "LASSO", lambda = NULL, SUV = NULL, nlam = 50, lam_min = 1e-4, 
+           eps = 1e-6, maxstep = 20,  maxstep1 = 20, thresh=1e-6, gamma = 2, 
+           dfmax = NULL, alpha = 1)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -59,7 +60,7 @@ mqr_sparse(Y, X, r1 = NULL, r3 = NULL, method="BIC",ncv=10,isPenU=0,isPenColumn=
   \item{maxstep1}{The maximum iterates number of the steepest gradient descent method.  
                   Default is \code{20}.}
                  
-  \item{thresh}{The threshhold to numerically determine which coefficients are zeros. Since the steepest projected 
+  \item{thresh}{The threshold to numerically determine which coefficients are zeros. Since the steepest projected 
                 gradient descent method with the approximated penalty can not shrink the estimated row of true zero row 
                 of U to exactly zero, we need to determine a numerical threshold. Default is \code{1e-6}.}
               

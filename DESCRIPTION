@@ -1,7 +1,7 @@
 Package: tensorMQR1
 Type: Package
 Title: tensorMQR1
-Version: 1.0
+Version: 0.1.0
 Date: 2019-09-01
 Authors@R: c(person(given = "Xu", family = "Liu", role = c("aut","cre"), email = "liu.xu@sufe.edu.cn"),
              person(given = "Jian", family = "Huang", role = "aut"),

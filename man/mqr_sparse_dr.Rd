@@ -11,9 +11,10 @@
 }
 
 \usage{
-mqr_sparse_dr(Y, X, r1_index = NULL, r3_index = NULL, method = "BIC", ncv = 10, penalty = "LASSO",
-              isPenU=0,isPenColumn=1, lambda = NULL, SUV = NULL, nlam = 50, lam_min = 0.001,
-              eps = 1e-6, maxstep = 20, maxstep1 = 20, gamma = 2, dfmax = NULL, alpha = 1)
+mqr_sparse_dr(Y, X, r1_index = NULL, r3_index = NULL, method = "BIC", ncv = 10, 
+              penalty = "LASSO", isPenU=0,isPenColumn=1, lambda = NULL, SUV = NULL, 
+              nlam = 50, lam_min = 0.001, eps = 1e-6, maxstep = 20, maxstep1 = 20, 
+              gamma = 2, dfmax = NULL, alpha = 1)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -66,7 +67,7 @@ mqr_sparse_dr(Y, X, r1_index = NULL, r3_index = NULL, method = "BIC", ncv = 10, 
   \item{maxstep1}{The maximum iterates number of the steepest gradient descent method.  
                   Default is \code{20}.}
 
-  \item{thresh}{The threshhold to numerically determine which coefficients are zeros. Since the steepest projected 
+  \item{thresh}{The threshold to numerically determine which coefficients are zeros. Since the steepest projected 
                 gradient descent method with the approximated penalty can not shrink the estimated row of true zero row 
                 of U to exactly zero, we need to determine a numerical threshold. Default is \code{1e-6}.}
 
@@ -87,7 +88,7 @@ mqr_sparse_dr(Y, X, r1_index = NULL, r3_index = NULL, method = "BIC", ncv = 10, 
 }
 
 \details{
-  This function gives\eqn{qp(p+1)/2} coefficients' estimators of MAM. The core 
+  This function gives \eqn{qp(p+1)/2} coefficients' estimators of MAM. The core 
   tensor is a \eqn{r_1\times r_2\times r_3}-tensor. We choose \eqn{r_1}, \eqn{r_2} 
   and \eqn{r_3}  by \code{BIC} or \code{CV}.
 }
