@@ -1,7 +1,7 @@
 # tensorMam
- Symmetric Tensor Estimation for Quadratic regression.
+ Symmetric Tensor Estimation for Quadratic Regression.
  
-  For a high-dimensional multiresponse Quadratic regression (MQR) with or without aparsity assumptions, 
+  For a high-dimensional Multiresponse Quadratic Regression (MQR) with or without aparsity assumptions, 
   treating the coefficients as a third-order symmetric tensor and borrowing Tucker decomposition to reduce the number of parameters.  
   The multivariate sparse group lasso (mcp or scad) and the steepest gradient descent algorithm are used to estimate the tensor for sparsity situation.
 # Installation
