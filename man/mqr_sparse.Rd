@@ -129,5 +129,5 @@ Symmetric Tensor Estimation for Quadratic Regression.
   mydata <- generateData(200, 2, 6, 6, D3)
    
   fit <- mqr_sparse(mydata$Y, mydata$X)
-  D3hat <- fit$Dnew
+  activeX <- fit$activeX
 }
