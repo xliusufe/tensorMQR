@@ -1,4 +1,4 @@
-# tensorMam
+# tensorMQR1
  Symmetric Tensor Estimation for Quadratic Regression.
  
   For a high-dimensional Multiresponse Quadratic Regression (MQR) with or without aparsity assumptions, 
