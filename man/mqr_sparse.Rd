@@ -34,7 +34,10 @@ mqr_sparse(Y, X, r1 = NULL, r3 = NULL, method="BIC",ncv=10,isPenU=0,isPenColumn=
                 is \code{FALSE}, the coefficients associating with \eqn{X_j} is penalized for each \eqn{j\in \{1,\cdots,p\}}.}
   
   \item{isPenColumn}{A logical value indicating whether the coefficients associating with \eqn{X_j} that affects whole response 
-                    \eqn{y} is penalized.  Default is \code{TRUE}. If \code{isPenU} is \code{TRUE}, the coefficients associating with                             \eqn{X_j} that affects whole response \eqn{y} is penalized for each \eqn{j\in \{1,\cdots,p\}}. If \code{isPenU} is                            \code{FALSE}, the coefficients associating with \eqn{X_j} that affects single response \eqn{y_l} is penalized for each                        \eqn{j\in \{1,\cdots,p\}}, where \eqn{l\in \{1,\cdots,q\}}.}
+                    \eqn{y} is penalized.  Default is \code{TRUE}. If \code{isPenU} is \code{TRUE}, the coefficients associating with                     
+                    \eqn{X_j} that affects whole response \eqn{y} is penalized for each \eqn{j\in \{1,\cdots,p\}}. If \code{isPenU} is                    
+                    \code{FALSE}, the coefficients associating with \eqn{X_j} that affects single response \eqn{y_l} is penalized for each                
+                    \eqn{j\in \{1,\cdots,p\}}, where \eqn{l\in \{1,\cdots,q\}}.}
   
   \item{penalty}{The penalty to be applied to the model. Either "LASSO" (the default),  
                  "SCAD", or "MCP".}
@@ -81,8 +84,7 @@ mqr_sparse(Y, X, r1 = NULL, r3 = NULL, method="BIC",ncv=10,isPenU=0,isPenColumn=
 
 \details{
   This function gives \eqn{qp(p+1)/2} coefficients' estimators of MQR. The core 
-  tensor is a \eqn{r_1\times r_2\times r_3}-tensor. \eqn{r_1}, \eqn{r_2} 
-  and \eqn{r_3}  are fixed.
+  tensor is a \eqn{r_1\times r_1\times r_3}-tensor. \eqn{r_1} and \eqn{r_3}  are fixed.
 }
 
 \value{

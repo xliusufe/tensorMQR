@@ -50,7 +50,8 @@
                   Default is \code{20}.}  
 }
 
-\details{This function gives \eqn{qp(p+1)/2} coefficients' estimators of MAM. The core tensor is a \eqn{r_1\times r_2\times r_3}-tensor. We choose \eqn{r_1}, \eqn{r_2} and \eqn{r_3}  by \code{BIC} or \code{CV}.
+\details{This function gives \eqn{qp(p+1)/2} coefficients' estimators of MQR. The core tensor is a \eqn{r_1\times r_2\times r_3}-tensor. 
+         We choose \eqn{r_1}, \eqn{r_2} and \eqn{r_3}  by \code{BIC} or \code{CV}.
 }
 
 \value{
@@ -58,7 +59,7 @@
   
   \item{rss}{Residual sum of squares (RSS).}
   
-  \item{rk_opt}{The optimal parametres that slected by \code{BIC} or \code{CV}. It is a vector with length 4, which are selected \eqn{r_1},  \eqn{r_2}, \eqn{r_3}, and \eqn{K}.}
+  \item{rk_opt}{The optimal parametres that slected by \code{BIC} or \code{CV}. It is a vector with length 4, which are selected \eqn{r_1} and \eqn{r_3}.}
   
   \item{selected}{Which \eqn{\lambda} is selection.}
   

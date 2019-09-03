@@ -44,7 +44,10 @@ mqr_sparse_dr(Y, X, r1_index = NULL, r3_index = NULL, method = "BIC", ncv = 10,
                 is \code{FALSE}, the coefficients associating with \eqn{X_j} is penalized for each \eqn{j\in \{1,\cdots,p\}}.}
   
   \item{isPenColumn}{A logical value indicating whether the coefficients associating with \eqn{X_j} that affects whole response 
-                    \eqn{y} is penalized.  Default is \code{TRUE}. If \code{isPenU} is \code{TRUE}, the coefficients associating with                             \eqn{X_j} that affects whole response \eqn{y} is penalized for each \eqn{j\in \{1,\cdots,p\}}. If \code{isPenU} is                            \code{FALSE}, the coefficients associating with \eqn{X_j} that affects single response \eqn{y_l} is penalized for each                        \eqn{j\in \{1,\cdots,p\}}, where \eqn{l\in \{1,\cdots,q\}}.}
+                    \eqn{y} is penalized.  Default is \code{TRUE}. If \code{isPenU} is \code{TRUE}, the coefficients associating with                     
+                    \eqn{X_j} that affects whole response \eqn{y} is penalized for each \eqn{j\in \{1,\cdots,p\}}. If \code{isPenU} is                    
+                    \code{FALSE}, the coefficients associating with \eqn{X_j} that affects single response \eqn{y_l} is penalized for each                
+                    \eqn{j\in \{1,\cdots,p\}}, where \eqn{l\in \{1,\cdots,q\}}.}
   
   \item{lambda}{A user-specified sequence of lambda values.  By default,
                 a sequence of values of length \code{nlam} is computed, equally
@@ -89,7 +92,7 @@ mqr_sparse_dr(Y, X, r1_index = NULL, r3_index = NULL, method = "BIC", ncv = 10,
 
 \details{
   This function gives \eqn{qp(p+1)/2} coefficients' estimators of MAM. The core 
-  tensor is a \eqn{r_1\times r_2\times r_3}-tensor. We choose \eqn{r_1}, \eqn{r_2} 
+  tensor is a \eqn{r_1\times r_1\times r_3}-tensor. We choose \eqn{r_1}
   and \eqn{r_3}  by \code{BIC} or \code{CV}.
 }
 
@@ -120,7 +123,7 @@ mqr_sparse_dr(Y, X, r1_index = NULL, r3_index = NULL, method = "BIC", ncv = 10,
   
   \item{RSS}{The values of \code{BIC} or \code{CV}, which is a vector.}
   
-  \item{rk_opt}{The optimal parametres that slected by \code{BIC} or \code{CV}. It is a vector with length 4, which are 
+  \item{rk_opt}{The optimal parametres that slected by \code{BIC} or \code{CV}. It is a vector with length 2, which are 
                 selected \eqn{r_1} and \eqn{r_3}.}
   
   \item{Y}{Response \eqn{Y}.}

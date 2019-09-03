@@ -6,7 +6,8 @@
   Fit MQR without sparsity assumption and with fixed ranks.
 }
 \description{
-  Fit a low-dimensional multiresponse quadratic regression without aparsity assumptions and  with given \eqn{r_1, r_2, r_3}. The steepest gradient descent algorithm is used to estimate tensor.
+  Fit a low-dimensional multiresponse quadratic regression without aparsity assumptions and  with given \eqn{r_1, r_2, r_3}. 
+  The steepest gradient descent algorithm is used to estimate tensor.
 }
 
 \usage{mqr(Y, X, r1 = NULL, r3 = NULL, SUV = NULL, eps = 1e-6, max_step = 20)
@@ -25,8 +26,8 @@
               \eqn{U}, \eqn{V}. By default, initial matrices are provided randomly.}
 
   \item{eps}{Convergence threshhold.  The algorithm iterates until the
-    loss function change in any coefficient is less than \code{eps}.  Default
-    is \code{1e-6}.}
+        loss function change in any coefficient is less than \code{eps}.  
+        Default is \code{1e-6}.}
     
   \item{max_step}{Maximum number of iterations.  Default is 20.}
   
@@ -34,7 +35,9 @@
                   Default is \code{20}.}  
 }
 
-\details{This function gives \eqn{qp(p+1)/2} coefficients' estimators of MQR. The core tensor is a \eqn{r_1\times r_2\times r_3}-tensor. We fixed \eqn{r_1}, \eqn{r_2} and \eqn{r_3} in the function \eqn{mqr}, but one can choose \eqn{r_1}, \eqn{r_2} and \eqn{r_3}  by \code{BIC} or \code{CV}. See details in function \code{mqr_bic} or \code{mqr_cv}.
+\details{This function gives \eqn{qp(p+1)/2} coefficients' estimators of MQR. The core tensor is a \eqn{r_1\times r_2\times r_3}-tensor. 
+        We fixed \eqn{r_1}, \eqn{r_2} and \eqn{r_3} in the function \code{mqr}, but one can choose \eqn{r_1}, \eqn{r_2} and \eqn{r_3}  
+        by \code{BIC} or \code{CV}. See details in function \code{mqr_bic} or \code{mqr_cv}.
 }
 
 \value{
