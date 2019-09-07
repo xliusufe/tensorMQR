@@ -17,7 +17,7 @@
    - [x] [tensorMQR-manual](https://github.com/xliusufe/tensorMQR1/blob/master/inst/tensorMQR1-manual.pdf) ------------ Details of the usage of the package.
 # Example
 
-    library(tensorMQE)
+    library(tensorMQR1)
 
     D3 <- matrix(runif(108, 0.7, 1), 3, 36)
     mydata <- generateData(200, 3, 6, 6, D3)    
@@ -29,7 +29,7 @@
  
 # References
 
-Symmetric Tensor Estimation for Quadratic regression. Manuscript.
+Symmetric Tensor Estimation for Quadratic Regression. Manuscript.
 
 # Development
 The R-package is developed by Xu Liu (liu.xu@sufe.edu.cn).
