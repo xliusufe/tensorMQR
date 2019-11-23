@@ -908,7 +908,7 @@ List Estimation(MatrixXd Y, MatrixXd X, MatrixXd S, MatrixXd U, MatrixXd V, List
 		if(convergence1.sum()==0) break;
 	}
 	Dnew = V*S*kroneckerProduct(U.transpose(), U.transpose());
-	return List::create(Named("likhd") = likhd0, Named("Dnew") = Dnew, Named("S") = S, Named("U")=U, Named("V")=V);
+	return List::create(Named("likhd") = 2*likhd0, Named("Dnew") = Dnew, Named("S") = S, Named("U")=U, Named("V")=V);
 }
 
 //----------------------------------------------------------------**
@@ -1300,7 +1300,7 @@ List EstPenColumn(MatrixXd Y, MatrixXd X, MatrixXd S, MatrixXd U, MatrixXd V, Ve
 		temp = S; temp.resize(r1*r1*r3, 1);
 		Spath.col(l) = temp;
 	}// end for
-	return List::create(Named("likhd") = likhd, Named("betapath") = betapath, Named("df") = df, Named("lambda")=lambda,Named("Upath")=Upath,Named("Vpath")=Vpath,Named("Spath")=Spath);
+	return List::create(Named("likhd") = 2*likhd, Named("betapath") = betapath, Named("df") = df, Named("lambda")=lambda,Named("Upath")=Upath,Named("Vpath")=Vpath,Named("Spath")=Spath);
 }
 
 //***-------------------------------------------------------------**
@@ -1457,7 +1457,7 @@ List EstPenSingle(MatrixXd Y, MatrixXd X, MatrixXd S, MatrixXd U, MatrixXd V, Ve
 		temp = S; temp.resize(r1*r1*r3, 1);
 		Spath.col(l) = temp;
 	}// end for
-	return List::create(Named("likhd") = likhd, Named("betapath") = betapath, Named("df") = df, Named("lambda")=lambda,Named("Upath")=Upath,Named("Vpath")=Vpath,Named("Spath")=Spath, Named("activeXpath") = activeXpath);
+	return List::create(Named("likhd") = 2*likhd, Named("betapath") = betapath, Named("df") = df, Named("lambda")=lambda,Named("Upath")=Upath,Named("Vpath")=Vpath,Named("Spath")=Spath, Named("activeXpath") = activeXpath);
 }
 //----------------------------------------------------------------**
 //***--------------------EstimationD3 directly--------------------**
@@ -1480,7 +1480,7 @@ List EstimationD3(MatrixXd Y, MatrixXd X)
   else
     for (j = 0; j < q; j++) Dnew.row(j) = (RQ * Y.col(j)).transpose();
   double likhd = (Y - Z * Dnew.transpose()).squaredNorm()/2;
-  return List::create(Named("likhd") = likhd, Named("Dnew") = Dnew);
+  return List::create(Named("likhd") = 2*likhd, Named("Dnew") = Dnew);
 }
 
 
