@@ -182,7 +182,6 @@ MatrixXd extractCols_by(MatrixXd Z, int min, int K, int by)
 // [[Rcpp::export]]
 MatrixXd TransferModalUnfoldings(MatrixXd S, int d1, int d2, int r1, int r2, int r3)
 {
-  //From S_(d1) to S_(d2)
   int j;
   MatrixXd S1,S_3;
   if (d1 == 3) {
@@ -192,7 +191,7 @@ MatrixXd TransferModalUnfoldings(MatrixXd S, int d1, int d2, int r1, int r2, int
       for (j = 1; j < r3;j++) {
         S_3 = S.row(j).transpose();
         S_3.resize(r1, r2);
-        S1 = cbind_rcpp(S1, S_3);// S3 is r3 *(r2r1) matrix
+        S1 = cbind_rcpp(S1, S_3);
       }
     }	
     if (d2 == 2) {
@@ -354,9 +353,7 @@ MatrixXd myQR(MatrixXd U, int k){
 	qr.compute(U);
 	Q = (qr.householderQ());
 	Q = Q.block(0,0,n,k);
-	//Rcout << "Q size " << Q.rows() << "x" << Q.cols() << std::endl;
 	R = qr.matrixQR().triangularView<Upper>();
-	//Rcout << "R size " << R.rows() << "x" << R.cols() << std::endl;
 	for(i=0;i<k;i++) if(R(i,i)<0) {IDEN(i,i) = -1;	flag=1;}
 	if(flag) Q = Q*IDEN;
 	return Q;

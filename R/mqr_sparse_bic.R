@@ -20,7 +20,7 @@ mqr_sparse_bic <- function(Y,X,r1_index,r3_index,S,U,V,lambda,opts,opts_pen){
         fit = EstPenSingle(Y,X,as.matrix(S[1:r3,1:r1^2]),as.matrix(U[,1:r1]),as.matrix(V[,1:r3]),lambda,opts,opts_pen) 
         df = r1*(r1+1)*r3/2 + colSums(fit$betapath) + q*r3 - r1^2-r3^2/2
       }
-      bic = 2*log(fit$likhd) + log(n)*df/n
+      bic = log(fit$likhd/(n*q)) + log(n*q)*df/(n*q)
       RSS = cbind(RSS,bic)
     }
   }

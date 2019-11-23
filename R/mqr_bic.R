@@ -20,7 +20,7 @@ mqr_bic <- function(Y,X,r1_index,r3_index,S,U,V,opts){
       fit = Estimation(Y,X,as.matrix(S[1:r3,1:r1^2]),as.matrix(U[,1:r1]),as.matrix(V[,1:r3]),opts)
       #df = r1*r1*r3+2*p*r1+q*r3-2*r1^2-r3^2/2
       df = r1*(r1+1)*r3/2+p*r1+q*r3-r1^2-r3^2/2
-      RSS = c(RSS,2*log(fit$likhd)+log(n)*df/n)
+      RSS = c(RSS,log(fit$likhd/(n*q))+log(n*q)*df/(n*q))
     }
   }
   selected = which.min(RSS)
