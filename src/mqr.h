@@ -558,10 +558,13 @@ MatrixXd produceX2(MatrixXd X){
 //----------------------------------------------------------------**
 //***--------Transfer Tensor to Parametric vectors ---------------**
 // [[Rcpp::export]]
-MatrixXd TransferTtoP(MatrixXd D3, int p, int q){	
+MatrixXd TransferT2P(MatrixXd D3, int d, int p, int q){	
+    if(d>3|d<1) stop("d must be among 1, 2, or 3!");
 	int i, j, k, count=0, n=q*p*(p+1)/2;
-	MatrixXd D1 = TransferModalUnfoldings(D3,3,1,p,p,q);
+	MatrixXd D1;;
 	VectorXd coef  = VectorXd::Constant(n, 0);
+	if(d==1) D1 = D3;
+	else D1 = TransferModalUnfoldings(D3,d,1,p,p,q);
 	for(i = 0; i < q; i++)
 		for (j = i*p; j < (i+1)*p; j++) 
 			for (k = j-i*p; k < p; k++){
@@ -573,7 +576,8 @@ MatrixXd TransferTtoP(MatrixXd D3, int p, int q){
 //----------------------------------------------------------------**
 //***--------Transfer Parametric vectors to Tensor ---------------**
 // [[Rcpp::export]]
-MatrixXd TransferPtoT(VectorXd coef, int p, int q){	
+MatrixXd TransferP2T(VectorXd coef, int d, int p, int q){	
+    if(d>3|d<1) stop("d must be among 1, 2, or 3!");
 	int i, j, k, ip, count=0;
 	MatrixXd D1 = MatrixXd::Constant(p, p*q, 0);
 	for(i = 0; i < q; i++){
@@ -585,7 +589,8 @@ MatrixXd TransferPtoT(VectorXd coef, int p, int q){
 		for (j = ip; j < ip+p; j++)			
 			for (k = j-ip+1; k < p; k++) D1(k,j) = D1(j-ip,k+ip);			
 	}
-	return TransferModalUnfoldings(D1,1,3,p,p,q);
+	if(d==1)  return D1;
+	else return TransferModalUnfoldings(D1,1,d,p,p,q);
 }
 //----------------------------------------------------------------**
 //***----------------------derivative of F -----------------------------**

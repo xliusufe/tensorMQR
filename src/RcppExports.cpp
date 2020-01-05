@@ -63,29 +63,31 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// TransferTtoP
-MatrixXd TransferTtoP(MatrixXd D3, int p, int q);
-RcppExport SEXP _tensorMQR1_TransferTtoP(SEXP D3SEXP, SEXP pSEXP, SEXP qSEXP) {
+// TransferT2P
+MatrixXd TransferT2P(MatrixXd D3, int d, int p, int q);
+RcppExport SEXP _tensorMQR1_TransferT2P(SEXP D3SEXP, SEXP dSEXP, SEXP pSEXP, SEXP qSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< MatrixXd >::type D3(D3SEXP);
+    Rcpp::traits::input_parameter< int >::type d(dSEXP);
     Rcpp::traits::input_parameter< int >::type p(pSEXP);
     Rcpp::traits::input_parameter< int >::type q(qSEXP);
-    rcpp_result_gen = Rcpp::wrap(TransferTtoP(D3, p, q));
+    rcpp_result_gen = Rcpp::wrap(TransferT2P(D3, d, p, q));
     return rcpp_result_gen;
 END_RCPP
 }
-// TransferPtoT
-MatrixXd TransferPtoT(VectorXd coef, int p, int q);
-RcppExport SEXP _tensorMQR1_TransferPtoT(SEXP coefSEXP, SEXP pSEXP, SEXP qSEXP) {
+// TransferP2T
+MatrixXd TransferP2T(VectorXd coef, int d, int p, int q);
+RcppExport SEXP _tensorMQR1_TransferP2T(SEXP coefSEXP, SEXP dSEXP, SEXP pSEXP, SEXP qSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< VectorXd >::type coef(coefSEXP);
+    Rcpp::traits::input_parameter< int >::type d(dSEXP);
     Rcpp::traits::input_parameter< int >::type p(pSEXP);
     Rcpp::traits::input_parameter< int >::type q(qSEXP);
-    rcpp_result_gen = Rcpp::wrap(TransferPtoT(coef, p, q));
+    rcpp_result_gen = Rcpp::wrap(TransferP2T(coef, d, p, q));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -196,8 +198,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_tensorMQR1_setuplambdaUn", (DL_FUNC) &_tensorMQR1_setuplambdaUn, 8},
     {"_tensorMQR1_produceZ", (DL_FUNC) &_tensorMQR1_produceZ, 1},
     {"_tensorMQR1_produceX2", (DL_FUNC) &_tensorMQR1_produceX2, 1},
-    {"_tensorMQR1_TransferTtoP", (DL_FUNC) &_tensorMQR1_TransferTtoP, 3},
-    {"_tensorMQR1_TransferPtoT", (DL_FUNC) &_tensorMQR1_TransferPtoT, 3},
+    {"_tensorMQR1_TransferT2P", (DL_FUNC) &_tensorMQR1_TransferT2P, 4},
+    {"_tensorMQR1_TransferP2T", (DL_FUNC) &_tensorMQR1_TransferP2T, 4},
     {"_tensorMQR1_setuplambda", (DL_FUNC) &_tensorMQR1_setuplambda, 8},
     {"_tensorMQR1_EstFR", (DL_FUNC) &_tensorMQR1_EstFR, 2},
     {"_tensorMQR1_EstUnconstr", (DL_FUNC) &_tensorMQR1_EstUnconstr, 8},

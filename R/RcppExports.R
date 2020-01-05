@@ -17,12 +17,12 @@ produceX2 <- function(X) {
     .Call(`_tensorMQR1_produceX2`, X)
 }
 
-TransferTtoP <- function(D3, p, q) {
-    .Call(`_tensorMQR1_TransferTtoP`, D3, p, q)
+TransferT2P <- function(D3, d, p, q) {
+    .Call(`_tensorMQR1_TransferT2P`, D3, d, p, q)
 }
 
-TransferPtoT <- function(coef, p, q) {
-    .Call(`_tensorMQR1_TransferPtoT`, coef, p, q)
+TransferP2T <- function(coef, d, p, q) {
+    .Call(`_tensorMQR1_TransferP2T`, coef, d, p, q)
 }
 
 setuplambda <- function(Y, X, S, U, V, isPenU, nlam, setlam) {

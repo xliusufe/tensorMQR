@@ -40,7 +40,7 @@ TransferModalUnfoldings(S, d1, d2 , r1, r2, r3)
 \value{
 %%  ~Describe the value returned
 %%  If it is a LIST, use
-  \item{D}{the output mode-d2-unfolding, \eqn{S_{(d_2)}}}
+  \item{D}{The output mode-d2-unfolding, \eqn{S_{(d_2)}}}
 }
 
 %\author{
