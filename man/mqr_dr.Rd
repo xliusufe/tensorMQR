@@ -9,8 +9,8 @@
   Fit a low-dimensional multiresponse quadratic regression without aparsity assumptions and with ranks \eqn{r_1, r_3} selected by \code{BIC} or \code{CV}.
 } 
 
-\usage{mqr_dr(Y, X, r1_index = NULL, r3_index = NULL, method = "BIC",
-               ncv = 10, SUV = NULL, isSym = TRUE, eps = 1e-6, max_step = 20)
+\usage{mqr_dr(Y, X, r1_index = NULL, r3_index = NULL, method = "BIC", ncv = 10, 
+               SUV = NULL, isSym = TRUE, eps = 1e-6, max_step = 20, max_step1 = 20)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{

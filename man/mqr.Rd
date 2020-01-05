@@ -10,7 +10,8 @@
   The steepest gradient descent algorithm is used to estimate tensor.
 }
 
-\usage{mqr(Y, X, r1 = NULL, r3 = NULL, SUV = NULL, isSym = TRUE, eps = 1e-6, max_step = 20, max_step1=20)
+\usage{mqr(Y, X, r1 = NULL, r3 = NULL, SUV = NULL, isSym = TRUE, eps = 1e-6, 
+            max_step = 20, max_step1=20)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
