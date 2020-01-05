@@ -55,7 +55,8 @@ Symmetric Tensor Estimation for Quadratic Regression.
     D0 <- matrix(runif(p^2,1,3),p)
     D1 <- cbind(D1,(D0+t(D0))/2)
   }   
-  coef <- TransferP2T(D1, 1 , p, q)
+  coef <- TransferT2P(D1, 1 , p, q)
   D1 <- TransferP2T(coef, 1 , p, q)
   D2 <- TransferP2T(coef, 2 , p, q)
+  coef2 <- TransferT2P(D2, 2 , p, q)
 }
