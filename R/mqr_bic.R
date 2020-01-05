@@ -1,26 +1,29 @@
 
 ##--------------main by BIC without sparsity----------------------##
-mqr_bic <- function(Y,X,r1_index,r3_index,S,U,V,opts){
+mqr_bic <- function(Y,X,method,r1_index,r3_index,S,U,V,mu,isSym,opts){
   n = opts$n
   p = opts$p
   q = opts$q
-  
-  # temp = kronecker(U,U)
-  # alpha = (Y-Z%*%temp%*%t(V%*%S))%*%(V%*%S)
-  # print(2*sum(alpha*(Z%*%temp)))
-  
-  
-  
   RSS = NULL
   for(r3 in r3_index){
     opts$r3 = r3
     for(r1 in r1_index){
       opts$r1 = r1
       opts$r2 = r1
-      fit = Estimation(Y,X,as.matrix(S[1:r3,1:r1^2]),as.matrix(U[,1:r1]),as.matrix(V[,1:r3]),opts)
-      #df = r1*r1*r3+2*p*r1+q*r3-2*r1^2-r3^2/2
+      if(isSym)
+        fit = Estimation(Y,X,as.matrix(S[1:r3,1:r1^2]),as.matrix(U[,1:r1]),as.matrix(V[,1:r3]),mu,opts)
+      else
+        fit = EstUnconstr(Y,X,as.matrix(S[1:r3,1:r1^2]),as.matrix(U[,1:r1]),as.matrix(U[,1:r1]),as.matrix(V[,1:r3]),mu,opts)
       df = r1*(r1+1)*r3/2+p*r1+q*r3-r1^2-r3^2/2
-      RSS = c(RSS,log(fit$likhd/(n*q))+log(n*q)*df/(n*q))
+      loglikelih =  -n*q * (log(2*pi) + log(fit$likhd))
+      bic <- switch (method,
+                     BIC = loglikelih + log(n*q)*df,
+                     AIC = loglikelih + 2*df,
+                     GCV = loglikelih/(1-df/n)^2,
+                     EBIC = loglikelih + log(n*q)*df + 2*(lgamma(q*p*(p+1)/2+1) 
+                                       - lgamma(df+1) - lgamma(q*p*(p+1)/2-df+1))
+      )
+      RSS = c(RSS,bic)
     }
   }
   selected = which.min(RSS)
@@ -31,9 +34,13 @@ mqr_bic <- function(Y,X,r1_index,r3_index,S,U,V,opts){
   opts$r1 = r1_opt
   opts$r2 = r1_opt
   opts$r3 = r3_opt
-  fit = Estimation(Y,X,as.matrix(S[1:r3_opt,1:r1_opt^2]),as.matrix(U[,1:r1_opt]),as.matrix(V[,1:r3_opt]),opts)  
+  if(isSym)
+    fit = Estimation(Y,X,as.matrix(S[1:r3_opt,1:r1_opt^2]),as.matrix(U[,1:r1_opt]),as.matrix(V[,1:r3_opt]),mu,opts)
+  else
+    fit = EstUnconstr(Y,X,as.matrix(S[1:r3_opt,1:r1_opt^2]),as.matrix(U[,1:r1_opt]),as.matrix(U[,1:r1_opt]),as.matrix(V[,1:r3_opt]),mu,opts)
   return(list(Dnew=fit$Dnew, 
               rss=fit$likhd,
+              mu = fit$mu,
               rk_opt=c(r1_opt,r3_opt),
               selected=selected,
               Y = Y,

@@ -5,16 +5,40 @@ TransferModalUnfoldings <- function(S, d1, d2, r1, r2, r3) {
     .Call(`_tensorMQR1_TransferModalUnfoldings`, S, d1, d2, r1, r2, r3)
 }
 
+setuplambdaUn <- function(Y, Z, A, B, C, S, nlam, setlam) {
+    .Call(`_tensorMQR1_setuplambdaUn`, Y, Z, A, B, C, S, nlam, setlam)
+}
+
 produceZ <- function(X) {
     .Call(`_tensorMQR1_produceZ`, X)
 }
 
-Estimation <- function(Y, X, S, U, V, optsList) {
-    .Call(`_tensorMQR1_Estimation`, Y, X, S, U, V, optsList)
+produceX2 <- function(X) {
+    .Call(`_tensorMQR1_produceX2`, X)
+}
+
+TransferTtoP <- function(D3, p, q) {
+    .Call(`_tensorMQR1_TransferTtoP`, D3, p, q)
+}
+
+TransferPtoT <- function(coef, p, q) {
+    .Call(`_tensorMQR1_TransferPtoT`, coef, p, q)
 }
 
 setuplambda <- function(Y, X, S, U, V, isPenU, nlam, setlam) {
     .Call(`_tensorMQR1_setuplambda`, Y, X, S, U, V, isPenU, nlam, setlam)
+}
+
+EstFR <- function(Y, X) {
+    .Call(`_tensorMQR1_EstFR`, Y, X)
+}
+
+EstUnconstr <- function(Y, X, S, A, B, C, mu, optsList) {
+    .Call(`_tensorMQR1_EstUnconstr`, Y, X, S, A, B, C, mu, optsList)
+}
+
+Estimation <- function(Y, X, S, U, V, mu, optsList) {
+    .Call(`_tensorMQR1_Estimation`, Y, X, S, U, V, mu, optsList)
 }
 
 EstPenColumn <- function(Y, X, S, U, V, lambda, optsList, optsList_pen) {
@@ -23,9 +47,5 @@ EstPenColumn <- function(Y, X, S, U, V, lambda, optsList, optsList_pen) {
 
 EstPenSingle <- function(Y, X, S, U, V, lambda, optsList, optsList_pen) {
     .Call(`_tensorMQR1_EstPenSingle`, Y, X, S, U, V, lambda, optsList, optsList_pen)
-}
-
-EstimationD3 <- function(Y, X) {
-    .Call(`_tensorMQR1_EstimationD3`, Y, X)
 }
 

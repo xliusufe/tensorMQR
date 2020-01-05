@@ -7,15 +7,25 @@ assig <- function(n_args){
 }
 
 ##--------------generate data----------------------##
-generateData <- function(n,q,s,p,D3,SigmaX=diag(p-1),sigma2=0.2,seed_id=1000, rho=0.0){
+generateData <- function(n,q,p,s,D3,SigmaX=NULL,SigmaE=NULL,sigma2=NULL,seed_id=NULL){
+  if(n<2) stop("n must be not smaller than 2")
+  if(q<1) stop("q must be not smaller than 1")
+  if(p<1) stop("p must be not smaller than 1")
+  if(s<1) stop("s must be not smaller than 1")
+  if(is.null(SigmaX)) SigmaX = diag(p*s)
+  if(is.null(SigmaE)) SigmaE = diag(q)
+  if(is.null(sigma2)) sigma2 = 0.2
+  if(sigma2<=0){
+    warning("sigma2 <= 0; set to 0.1")
+    sigma2=0.2
+  }
+  if(is.null(seed_id)) seed_id=1000
   set.seed(seed_id)
   X <- matrix(rnorm(n*(p-1)), nrow = n)%*%chol(SigmaX)
   X <- cbind(rep(1,n),X)
-  Z = produceZ(X[,1:s])
-  Sigma = matrix(rho,q,q)+diag(1-rho,q,q)
-  A = chol(Sigma) 
+  Z = produceZ(X[,1:(s+1)])
   eps <- matrix(rnorm(n*q),n,q)
-  Y <- Z%*%t(D3) + sigma2*eps%*%A
+  Y <- Z%*%t(D3) + sigma2*eps%*%chol(SigmaE)
   return(list(Y=Y,X=X))
 }
 

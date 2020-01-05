@@ -10,10 +10,10 @@
 }
 
 \usage{
-mqr_sparse(Y, X, r1 = NULL, r3 = NULL, method="BIC",ncv=10,isPenU=0,isPenColumn=1, 
-           penalty = "LASSO", lambda = NULL, SUV = NULL, nlam = 50, lam_min = 1e-4, 
-           eps = 1e-6, maxstep = 20,  maxstep1 = 20, thresh=1e-6, gamma = 2, 
-           dfmax = NULL, alpha = 1)
+mqr_sparse(Y, X, r1 = NULL, r3 = NULL, method = "BIC", ncv = 10, isPenU = 0, 
+           isPenColumn = 1, penalty = "LASSO", lambda = NULL, SUV = NULL,  
+           nlam = 50, lam_min = 1e-4, ftol = 1e-6, maxstep = 20,  maxstep1 = 20, 
+           eps = 1e-4,  thresh=1e-4, gamma_pen = 2,  dfmax = NULL, alpha = 1)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -25,10 +25,10 @@ mqr_sparse(Y, X, r1 = NULL, r3 = NULL, method="BIC",ncv=10,isPenU=0,isPenColumn=
   
   \item{r3}{The third dimension of single value matrix of the tensor. Default is 2.}
   
-  \item{method}{The method to be applied to select parameters.  Either "BIC"
-                (the default), or "CV".}
+  \item{method}{The method to be applied to select parameters.  Either \code{BIC} (the default), \code{AIC}, \code{EBIC}, \code{CV}, 
+                or \code{GCV}.}
                 
-  \item{ncv}{The number of cross-validation folds.  Default is 10. If \code{method} is \code{BIC}, \code{ncv} is useless.}
+  \item{ncv}{The number of cross-validation folds.  Default is 10. If \code{method} is not \code{CV}, \code{ncv} is useless.}
   
   \item{isPenU}{A logical value indicating whether the rows of \eqn{U} is penalized.  Default is \code{FALSE}. If \code{isPenU} 
                 is \code{FALSE}, the coefficients associating with \eqn{X_j} is penalized for each \eqn{j\in \{1,\cdots,p\}}.}
@@ -54,8 +54,8 @@ mqr_sparse(Y, X, r1 = NULL, r3 = NULL, method="BIC",ncv=10,isPenU=0,isPenColumn=
   \item{lam_min}{The smallest value for lambda, as a fraction of
                  lambda.max.  Default is 1e-3.}
                  
-  \item{eps}{Convergence threshhold.  The algorithm iterates until the
-              relative change in any coefficient is less than \code{eps}.  
+  \item{ftol}{Convergence threshhold for the Curvilinear search.  The algorithm iterates until the
+              relative change in any coefficient is less than \code{eps1}.  
               Default is \code{1e-6}.}
               
   \item{maxstep}{Maximum number of iterations. Default is \code{20}.}
@@ -66,8 +66,12 @@ mqr_sparse(Y, X, r1 = NULL, r3 = NULL, method="BIC",ncv=10,isPenU=0,isPenColumn=
   \item{thresh}{The threshold to numerically determine which coefficients are zeros. Since the steepest projected 
                 gradient descent method with the approximated penalty can not shrink the estimated row of true zero row 
                 of U to exactly zero, we need to determine a numerical threshold. Default is \code{1e-6}.}
+   
+  \item{eps}{Convergence threshhold for the outer loop.  The algorithm iterates until the
+              relative change in any coefficient is less than \code{eps1}.  
+              Default is \code{1e-4}.}
               
-  \item{gamma}{The tuning parameter of the MCP/SCAD penalty (see details).}
+  \item{gamma_pen}{The tuning parameter of the MCP/SCAD penalty (see details).}
   
   \item{dfmax}{Upper bound for the number of nonzero coefficients.
                Default is no upper bound.  However, for large data sets,

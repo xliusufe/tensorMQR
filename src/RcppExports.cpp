@@ -23,6 +23,24 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// setuplambdaUn
+VectorXd setuplambdaUn(MatrixXd Y, MatrixXd Z, MatrixXd A, MatrixXd B, MatrixXd C, MatrixXd S, int nlam, VectorXd setlam);
+RcppExport SEXP _tensorMQR1_setuplambdaUn(SEXP YSEXP, SEXP ZSEXP, SEXP ASEXP, SEXP BSEXP, SEXP CSEXP, SEXP SSEXP, SEXP nlamSEXP, SEXP setlamSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< MatrixXd >::type Y(YSEXP);
+    Rcpp::traits::input_parameter< MatrixXd >::type Z(ZSEXP);
+    Rcpp::traits::input_parameter< MatrixXd >::type A(ASEXP);
+    Rcpp::traits::input_parameter< MatrixXd >::type B(BSEXP);
+    Rcpp::traits::input_parameter< MatrixXd >::type C(CSEXP);
+    Rcpp::traits::input_parameter< MatrixXd >::type S(SSEXP);
+    Rcpp::traits::input_parameter< int >::type nlam(nlamSEXP);
+    Rcpp::traits::input_parameter< VectorXd >::type setlam(setlamSEXP);
+    rcpp_result_gen = Rcpp::wrap(setuplambdaUn(Y, Z, A, B, C, S, nlam, setlam));
+    return rcpp_result_gen;
+END_RCPP
+}
 // produceZ
 MatrixXd produceZ(MatrixXd X);
 RcppExport SEXP _tensorMQR1_produceZ(SEXP XSEXP) {
@@ -34,19 +52,40 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// Estimation
-List Estimation(MatrixXd Y, MatrixXd X, MatrixXd S, MatrixXd U, MatrixXd V, List optsList);
-RcppExport SEXP _tensorMQR1_Estimation(SEXP YSEXP, SEXP XSEXP, SEXP SSEXP, SEXP USEXP, SEXP VSEXP, SEXP optsListSEXP) {
+// produceX2
+MatrixXd produceX2(MatrixXd X);
+RcppExport SEXP _tensorMQR1_produceX2(SEXP XSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< MatrixXd >::type Y(YSEXP);
     Rcpp::traits::input_parameter< MatrixXd >::type X(XSEXP);
-    Rcpp::traits::input_parameter< MatrixXd >::type S(SSEXP);
-    Rcpp::traits::input_parameter< MatrixXd >::type U(USEXP);
-    Rcpp::traits::input_parameter< MatrixXd >::type V(VSEXP);
-    Rcpp::traits::input_parameter< List >::type optsList(optsListSEXP);
-    rcpp_result_gen = Rcpp::wrap(Estimation(Y, X, S, U, V, optsList));
+    rcpp_result_gen = Rcpp::wrap(produceX2(X));
+    return rcpp_result_gen;
+END_RCPP
+}
+// TransferTtoP
+MatrixXd TransferTtoP(MatrixXd D3, int p, int q);
+RcppExport SEXP _tensorMQR1_TransferTtoP(SEXP D3SEXP, SEXP pSEXP, SEXP qSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< MatrixXd >::type D3(D3SEXP);
+    Rcpp::traits::input_parameter< int >::type p(pSEXP);
+    Rcpp::traits::input_parameter< int >::type q(qSEXP);
+    rcpp_result_gen = Rcpp::wrap(TransferTtoP(D3, p, q));
+    return rcpp_result_gen;
+END_RCPP
+}
+// TransferPtoT
+MatrixXd TransferPtoT(VectorXd coef, int p, int q);
+RcppExport SEXP _tensorMQR1_TransferPtoT(SEXP coefSEXP, SEXP pSEXP, SEXP qSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< VectorXd >::type coef(coefSEXP);
+    Rcpp::traits::input_parameter< int >::type p(pSEXP);
+    Rcpp::traits::input_parameter< int >::type q(qSEXP);
+    rcpp_result_gen = Rcpp::wrap(TransferPtoT(coef, p, q));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -65,6 +104,53 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< int >::type nlam(nlamSEXP);
     Rcpp::traits::input_parameter< VectorXd >::type setlam(setlamSEXP);
     rcpp_result_gen = Rcpp::wrap(setuplambda(Y, X, S, U, V, isPenU, nlam, setlam));
+    return rcpp_result_gen;
+END_RCPP
+}
+// EstFR
+List EstFR(MatrixXd Y, MatrixXd X);
+RcppExport SEXP _tensorMQR1_EstFR(SEXP YSEXP, SEXP XSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< MatrixXd >::type Y(YSEXP);
+    Rcpp::traits::input_parameter< MatrixXd >::type X(XSEXP);
+    rcpp_result_gen = Rcpp::wrap(EstFR(Y, X));
+    return rcpp_result_gen;
+END_RCPP
+}
+// EstUnconstr
+List EstUnconstr(MatrixXd Y, MatrixXd X, MatrixXd S, MatrixXd A, MatrixXd B, MatrixXd C, VectorXd mu, List optsList);
+RcppExport SEXP _tensorMQR1_EstUnconstr(SEXP YSEXP, SEXP XSEXP, SEXP SSEXP, SEXP ASEXP, SEXP BSEXP, SEXP CSEXP, SEXP muSEXP, SEXP optsListSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< MatrixXd >::type Y(YSEXP);
+    Rcpp::traits::input_parameter< MatrixXd >::type X(XSEXP);
+    Rcpp::traits::input_parameter< MatrixXd >::type S(SSEXP);
+    Rcpp::traits::input_parameter< MatrixXd >::type A(ASEXP);
+    Rcpp::traits::input_parameter< MatrixXd >::type B(BSEXP);
+    Rcpp::traits::input_parameter< MatrixXd >::type C(CSEXP);
+    Rcpp::traits::input_parameter< VectorXd >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< List >::type optsList(optsListSEXP);
+    rcpp_result_gen = Rcpp::wrap(EstUnconstr(Y, X, S, A, B, C, mu, optsList));
+    return rcpp_result_gen;
+END_RCPP
+}
+// Estimation
+List Estimation(MatrixXd Y, MatrixXd X, MatrixXd S, MatrixXd U, MatrixXd V, VectorXd mu, List optsList);
+RcppExport SEXP _tensorMQR1_Estimation(SEXP YSEXP, SEXP XSEXP, SEXP SSEXP, SEXP USEXP, SEXP VSEXP, SEXP muSEXP, SEXP optsListSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< MatrixXd >::type Y(YSEXP);
+    Rcpp::traits::input_parameter< MatrixXd >::type X(XSEXP);
+    Rcpp::traits::input_parameter< MatrixXd >::type S(SSEXP);
+    Rcpp::traits::input_parameter< MatrixXd >::type U(USEXP);
+    Rcpp::traits::input_parameter< MatrixXd >::type V(VSEXP);
+    Rcpp::traits::input_parameter< VectorXd >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< List >::type optsList(optsListSEXP);
+    rcpp_result_gen = Rcpp::wrap(Estimation(Y, X, S, U, V, mu, optsList));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -104,27 +190,20 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// EstimationD3
-List EstimationD3(MatrixXd Y, MatrixXd X);
-RcppExport SEXP _tensorMQR1_EstimationD3(SEXP YSEXP, SEXP XSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< MatrixXd >::type Y(YSEXP);
-    Rcpp::traits::input_parameter< MatrixXd >::type X(XSEXP);
-    rcpp_result_gen = Rcpp::wrap(EstimationD3(Y, X));
-    return rcpp_result_gen;
-END_RCPP
-}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_tensorMQR1_TransferModalUnfoldings", (DL_FUNC) &_tensorMQR1_TransferModalUnfoldings, 6},
+    {"_tensorMQR1_setuplambdaUn", (DL_FUNC) &_tensorMQR1_setuplambdaUn, 8},
     {"_tensorMQR1_produceZ", (DL_FUNC) &_tensorMQR1_produceZ, 1},
-    {"_tensorMQR1_Estimation", (DL_FUNC) &_tensorMQR1_Estimation, 6},
+    {"_tensorMQR1_produceX2", (DL_FUNC) &_tensorMQR1_produceX2, 1},
+    {"_tensorMQR1_TransferTtoP", (DL_FUNC) &_tensorMQR1_TransferTtoP, 3},
+    {"_tensorMQR1_TransferPtoT", (DL_FUNC) &_tensorMQR1_TransferPtoT, 3},
     {"_tensorMQR1_setuplambda", (DL_FUNC) &_tensorMQR1_setuplambda, 8},
+    {"_tensorMQR1_EstFR", (DL_FUNC) &_tensorMQR1_EstFR, 2},
+    {"_tensorMQR1_EstUnconstr", (DL_FUNC) &_tensorMQR1_EstUnconstr, 8},
+    {"_tensorMQR1_Estimation", (DL_FUNC) &_tensorMQR1_Estimation, 7},
     {"_tensorMQR1_EstPenColumn", (DL_FUNC) &_tensorMQR1_EstPenColumn, 8},
     {"_tensorMQR1_EstPenSingle", (DL_FUNC) &_tensorMQR1_EstPenSingle, 8},
-    {"_tensorMQR1_EstimationD3", (DL_FUNC) &_tensorMQR1_EstimationD3, 2},
     {NULL, NULL, 0}
 };
 
