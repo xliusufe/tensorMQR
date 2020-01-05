@@ -65,10 +65,10 @@ mqr_sparse_dr(Y, X, r1_index = NULL, r3_index = NULL, method = "BIC", ncv = 10,
               relative change in any coefficient is less than \code{eps1}.  
               Default is \code{1e-6}.}
               
-  \item{maxstep}{Maximum number of iterations. Default is 20.}
-  
-  \item{maxstep1}{The maximum iterates number of the steepest gradient descent method.  
-                  Default is \code{20}.}
+  \item{maxstep}{The maximum iterates number of the steepest gradient descent method.  
+                  Default is \code{20}.} 
+                  
+  \item{max_step1}{Maximum number of outer iterations.  Default is 20.}
 
   \item{eps}{Convergence threshhold for the outer loop.  The algorithm iterates until the
               relative change in any coefficient is less than \code{eps1}.  

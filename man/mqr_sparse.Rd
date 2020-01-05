@@ -58,10 +58,10 @@ mqr_sparse(Y, X, r1 = NULL, r3 = NULL, method = "BIC", ncv = 10, isPenU = 0,
               relative change in any coefficient is less than \code{eps1}.  
               Default is \code{1e-6}.}
               
-  \item{maxstep}{Maximum number of iterations. Default is \code{20}.}
-  
-  \item{maxstep1}{The maximum iterates number of the steepest gradient descent method.  
-                  Default is \code{20}.}
+  \item{maxstep}{The maximum iterates number of the steepest gradient descent method.  
+                  Default is \code{20}.} 
+                  
+  \item{max_step1}{Maximum number of outer iterations.  Default is 20.}
                  
   \item{thresh}{The threshold to numerically determine which coefficients are zeros. Since the steepest projected 
                 gradient descent method with the approximated penalty can not shrink the estimated row of true zero row 

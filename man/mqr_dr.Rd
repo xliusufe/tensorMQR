@@ -48,10 +48,10 @@
              relative change in any coefficient is less than \code{eps}.  Default
              is \code{1e-6}.}
              
-  \item{max_step}{Maximum number of iterations.  Default is 20.}
-  
-  \item{maxstep1}{The maximum iterates number of the steepest gradient descent method.  
-                  Default is \code{20}.}  
+  \item{maxstep}{The maximum iterates number of the steepest gradient descent method.  
+                  Default is \code{20}.} 
+                  
+  \item{max_step1}{Maximum number of outer iterations.  Default is 20.}
 }
 
 \details{This function gives \eqn{qp(p+1)/2} coefficients' estimators of MQR. The core tensor is a \eqn{r_1\times r_2\times r_3}-tensor. 

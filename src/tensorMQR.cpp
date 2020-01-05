@@ -28,7 +28,7 @@ List EstUnconstr(MatrixXd Y, MatrixXd X, MatrixXd S, MatrixXd A, MatrixXd B, Mat
 	Ones.setOnes(n);
 	List fit;
 	int step = 0;
-	while (step<opts.max_step) {
+	while (step<opts.max_step1) {
 		convergence1 = VectorXi::Constant(4, 1);
 		step = step + 1;
 		Snew = updateS(Y1, Z, A, B, C);
@@ -702,7 +702,7 @@ List EstPenColumn(MatrixXd Y, MatrixXd X, MatrixXd S, MatrixXd U, MatrixXd V, Ve
 	for (l = 0; l < nlam; l++) {
 		lambda1 = lambda[l];
 		step = 0;
-		while (step<opts.max_step) {
+		while (step<opts.max_step1) {
 		  convergence1 = VectorXi::Constant(3, 1);
 			step ++;
 			
@@ -844,7 +844,7 @@ List EstPenSingle(MatrixXd Y, MatrixXd X, MatrixXd S, MatrixXd U, MatrixXd V, Ve
 	for (l = 0; l < nlam; l++) {
 		lambda1 = lambda[l];
 		step = 0;
-		while (step<opts.max_step) {
+		while (step<opts.max_step1) {
 		  convergence1 = VectorXi::Constant(3, 1);
 			step ++;
 			
