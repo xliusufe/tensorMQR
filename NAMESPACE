@@ -7,6 +7,6 @@ export(mqr,
        mqr_sparse,
        mqr_sparse_dr,
        TransferModalUnfoldings,
-       generateData
+       generateData,
 	   TransferT2P,
 	   TransferP2T)
