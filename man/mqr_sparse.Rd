@@ -6,7 +6,7 @@
   Fit MQR with sparsity assumption and fixed ranks.
 }
 \description{
-  Fit a high-dimensional multiresponse quadratic regression with or without aparsity assumptions, and given ranks given ranks \eqn{r_1, r_2, r_3}. The multivariate sparse group \code{lasso} (\code{mcp} or \code{scad}) and the steepest gradient descent algorithm are used to estimate tensor for sparsity situation.
+  Fit a high-dimensional multiresponse quadratic regression with or without aparsity assumptions, and given ranks given ranks \eqn{r_1, r_2, r_3}. The multivariate sparse group \code{lasso} (\code{mcp} or \code{scad}) and the steepest gradient descent algorithm are used to estimate tensor for sparsity situation. The tuning parameter is selected by \code{BIC} (the default), \code{AIC}, \code{EBIC}, \code{CV}, or \code{GCV}.
 }
 
 \usage{

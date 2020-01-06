@@ -10,8 +10,8 @@
   The steepest gradient descent algorithm is used to estimate tensor.
 }
 
-\usage{mqr(Y, X, r1 = NULL, r3 = NULL, SUV = NULL, isSym = TRUE, eps = 1e-6, 
-            max_step = 20, max_step1=20)
+\usage{mqr(Y, X, r1 = NULL, r3 = NULL, SUV = NULL, isSym = TRUE, 
+                         eps = 1e-6, max_step = 20, max_step1=20)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -28,7 +28,7 @@
 
   \item{isSym}{A logical value indicating whether restrict tensor to be symmetric. If isSym is \code{TRUE} (the default),  the core tensor 
              is symmetric, and both \eqn{U} and \eqn{V} belong to Stiefel manifold. If isSym is \code{FALSE}, we decompose 
-             tensor to \eqn{S}, \eqn{A}, \eqn{B}, \eqn{C}, where we treat the tensor as an asymmetric tensor. }
+             the tensor to \eqn{S}, \eqn{A}, \eqn{B}, \eqn{C}, where the tensor is treated  to be asymmetric.}
              
   \item{eps}{Convergence threshhold.  The algorithm iterates until the
         loss function change in any coefficient is less than \code{eps}.  

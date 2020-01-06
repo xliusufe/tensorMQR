@@ -6,7 +6,7 @@
   Fit MQR without sparsity assumption, and with ranks selected by \code{BIC} or \code{CV}.
 }
 \description{
-  Fit a low-dimensional multiresponse quadratic regression without aparsity assumptions and with ranks \eqn{r_1, r_3} selected by \code{BIC} or \code{CV}.
+  Fit a low-dimensional multiresponse quadratic regression without aparsity assumptions and with ranks \eqn{r_1, r_3} selected by \code{BIC} (the default), \code{AIC}, \code{EBIC}, \code{CV}, or \code{GCV}..
 } 
 
 \usage{mqr_dr(Y, X, r1_index = NULL, r3_index = NULL, method = "BIC", ncv = 10, 
@@ -42,7 +42,7 @@
 
   \item{isSym}{A logical value indicating whether restrict tensor to be symmetric. If isSym is \code{TRUE} (the default),  the core tensor 
              is symmetric, and both \eqn{U} and \eqn{V} belong to Stiefel manifold. If isSym is \code{FALSE}, we decompose 
-             tensor to \eqn{S}, \eqn{A}, \eqn{B}, \eqn{C}, where we treat the tensor as an asymmetric tensor.}
+             the tensor to \eqn{S}, \eqn{A}, \eqn{B}, \eqn{C}, where the tensor is treated  to be asymmetric.}
                 
   \item{eps}{Convergence threshhold.  The algorithm iterates until the
              relative change in any coefficient is less than \code{eps}.  Default

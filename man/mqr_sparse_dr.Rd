@@ -6,8 +6,8 @@
   Fit MQR with sparsity assumption and ranks selected by \code{BIC} or \code{CV}.
 }
 \description{
-  Fit a high-dimensional multiresponse quadratic regression with or with aparsity assumptions and ranks selected by \code{BIC} or \code{CV}. The multivariate sparse group \code{lasso} (\code{mcp} or \code{scad}) and the steepest gradient descent algorithm are used to estimate
-  tensor for sparsity situation. The tuning parameter is selected by \code{BIC} or \code{CV}, which matchs the method of rank selection.
+  Fit a high-dimensional multiresponse quadratic regression with or with aparsity assumptions. The multivariate sparse group \code{lasso} (\code{mcp} or \code{scad}) and the steepest gradient descent algorithm are used to estimate
+  tensor for sparsity situation. The tuning parameter and ranks are selected by \code{BIC} (the default), \code{AIC}, \code{EBIC}, \code{CV}, or \code{GCV}, which matchs the method of rank selection.
 }
 
 \usage{
