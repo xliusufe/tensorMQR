@@ -28,7 +28,7 @@
 
   \item{isSym}{A logical value indicating whether restrict tensor to be symmetric. If isSym is \code{TRUE} (the default),  the core tensor 
              is symmetric, and both \eqn{U} and \eqn{V} belong to Stiefel manifold. If isSym is \code{FALSE}, we decompose 
-             the tensor to \eqn{S}, \eqn{A}, \eqn{B}, \eqn{C}, where the tensor is treated  to be asymmetric.}
+             the tensor to \eqn{S}, \eqn{A}, \eqn{B}, \eqn{C}, where the tensor is treated  as being asymmetric.}
              
   \item{eps}{Convergence threshhold.  The algorithm iterates until the
         loss function change in any coefficient is less than \code{eps}.  
