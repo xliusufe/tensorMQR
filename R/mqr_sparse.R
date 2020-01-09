@@ -57,11 +57,11 @@ mqr_sparse <-
       else
         fit = EstPenSingle(Y,X,S,U,V,lambda,opts,opts_pen) 
       df = fit$df*r1
-      loglikelih =  -n*q * (log(2*pi) + log(fit$likhd))
+      loglikelih = (n*q)*log(fit$likhd/(n*q))
       bic <- switch (method,
                      BIC = loglikelih + log(n*q)*df,
                      AIC = loglikelih + 2*df,
-                     GCV = loglikelih/(1-df/n)^2,
+                     GCV = fit$likhd*(n*q)/(n*q-df)^2,
                      EBIC = loglikelih + log(n*q)*df + 2*(lgamma(q*p*(p-1)/2+1) 
                                        - lgamma(df+1) - lgamma(q*p*(p-1)/2-df+1))
       )  

@@ -23,11 +23,11 @@ mqr_sparse_bic <- function(Y,X,method,r1_index,r3_index,S,U,V,lambda,isSym,mu,op
         fit = EstPenSingle(Y,X,as.matrix(S[1:r3,1:r1^2]),as.matrix(U[,1:r1]),as.matrix(V[,1:r3]),lambda,opts,opts_pen) 
         df = r1*(r1+1)*r3/2 + colSums(fit$betapath) + q*r3 - r1^2-r3^2/2
       }
-      loglikelih =  -n*q * (log(2*pi) + log(fit$likhd))
+      loglikelih = (n*q)*log(fit$likhd/(n*q))
       bic <- switch (method,
                      BIC = loglikelih + log(n*q)*df,
                      AIC = loglikelih + 2*df,
-                     GCV = loglikelih/(1-df/n)^2,
+                     GCV = fit$likhd*(n*q)/(n*q-df)^2,
                      EBIC = loglikelih + log(n*q)*df + 2*(lgamma(q*p*(p-1)/2+1) 
                                        - lgamma(df+1) - lgamma(q*p*(p-1)/2-df+1))
       )      
