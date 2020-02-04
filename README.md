@@ -28,13 +28,13 @@
     mydata <- generateData(n, q, p, p, D3)    
     fit <- mqr(mydata$Y, mydata$X)
     D3hat <- fit$Dnew
-	D2hat <- TransferModalUnfoldings(D3hat,3,2,p,K,q)
+	D2hat <- TransferModalUnfoldings(D3hat,3,2,p,p,q)
     
     # Example 2
     # The usage of function "mqr_dr()"	
     fit_dr <- mqr_dr(mydata$Y, mydata$X)
     D3hat <- fit_dr$Dnew
-	D2hat <- TransferModalUnfoldings(D3hat,3,2,p,K,q)	
+	D2hat <- TransferModalUnfoldings(D3hat,3,2,p,p,q)	
     opt <- fit_dr$rk_opt
  
     # Example 3 
