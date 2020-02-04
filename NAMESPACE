@@ -9,4 +9,6 @@ export(mqr,
        TransferModalUnfoldings,
        generateData,
 	   TransferT2P,
-	   TransferP2T)
+	   TransferP2T,
+	   mvrcolwise,
+	   mvrblockwise)

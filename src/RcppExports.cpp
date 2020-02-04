@@ -64,30 +64,56 @@ BEGIN_RCPP
 END_RCPP
 }
 // TransferT2P
-MatrixXd TransferT2P(MatrixXd D3, int d, int p, int q);
-RcppExport SEXP _tensorMQR1_TransferT2P(SEXP D3SEXP, SEXP dSEXP, SEXP pSEXP, SEXP qSEXP) {
+MatrixXd TransferT2P(MatrixXd D, int d, int p, int q);
+RcppExport SEXP _tensorMQR1_TransferT2P(SEXP DSEXP, SEXP dSEXP, SEXP pSEXP, SEXP qSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< MatrixXd >::type D3(D3SEXP);
+    Rcpp::traits::input_parameter< MatrixXd >::type D(DSEXP);
     Rcpp::traits::input_parameter< int >::type d(dSEXP);
     Rcpp::traits::input_parameter< int >::type p(pSEXP);
     Rcpp::traits::input_parameter< int >::type q(qSEXP);
-    rcpp_result_gen = Rcpp::wrap(TransferT2P(D3, d, p, q));
+    rcpp_result_gen = Rcpp::wrap(TransferT2P(D, d, p, q));
     return rcpp_result_gen;
 END_RCPP
 }
 // TransferP2T
-MatrixXd TransferP2T(VectorXd coef, int d, int p, int q);
+MatrixXd TransferP2T(MatrixXd coef, int d, int p, int q);
 RcppExport SEXP _tensorMQR1_TransferP2T(SEXP coefSEXP, SEXP dSEXP, SEXP pSEXP, SEXP qSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< VectorXd >::type coef(coefSEXP);
+    Rcpp::traits::input_parameter< MatrixXd >::type coef(coefSEXP);
     Rcpp::traits::input_parameter< int >::type d(dSEXP);
     Rcpp::traits::input_parameter< int >::type p(pSEXP);
     Rcpp::traits::input_parameter< int >::type q(qSEXP);
     rcpp_result_gen = Rcpp::wrap(TransferP2T(coef, d, p, q));
+    return rcpp_result_gen;
+END_RCPP
+}
+// selectedP2X
+VectorXi selectedP2X(VectorXi coef, int p);
+RcppExport SEXP _tensorMQR1_selectedP2X(SEXP coefSEXP, SEXP pSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< VectorXi >::type coef(coefSEXP);
+    Rcpp::traits::input_parameter< int >::type p(pSEXP);
+    rcpp_result_gen = Rcpp::wrap(selectedP2X(coef, p));
+    return rcpp_result_gen;
+END_RCPP
+}
+// selectedX2D
+MatrixXd selectedX2D(VectorXi coef, MatrixXd beta, int p, int q);
+RcppExport SEXP _tensorMQR1_selectedX2D(SEXP coefSEXP, SEXP betaSEXP, SEXP pSEXP, SEXP qSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< VectorXi >::type coef(coefSEXP);
+    Rcpp::traits::input_parameter< MatrixXd >::type beta(betaSEXP);
+    Rcpp::traits::input_parameter< int >::type p(pSEXP);
+    Rcpp::traits::input_parameter< int >::type q(qSEXP);
+    rcpp_result_gen = Rcpp::wrap(selectedX2D(coef, beta, p, q));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -121,74 +147,196 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// EstUnconstr
-List EstUnconstr(MatrixXd Y, MatrixXd X, MatrixXd S, MatrixXd A, MatrixXd B, MatrixXd C, VectorXd mu, List optsList);
-RcppExport SEXP _tensorMQR1_EstUnconstr(SEXP YSEXP, SEXP XSEXP, SEXP SSEXP, SEXP ASEXP, SEXP BSEXP, SEXP CSEXP, SEXP muSEXP, SEXP optsListSEXP) {
+// setuplambdaMVR_colwise
+VectorXd setuplambdaMVR_colwise(MatrixXd Y, MatrixXd Z, int nlam, VectorXd setlam);
+RcppExport SEXP _tensorMQR1_setuplambdaMVR_colwise(SEXP YSEXP, SEXP ZSEXP, SEXP nlamSEXP, SEXP setlamSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< MatrixXd >::type Y(YSEXP);
-    Rcpp::traits::input_parameter< MatrixXd >::type X(XSEXP);
+    Rcpp::traits::input_parameter< MatrixXd >::type Z(ZSEXP);
+    Rcpp::traits::input_parameter< int >::type nlam(nlamSEXP);
+    Rcpp::traits::input_parameter< VectorXd >::type setlam(setlamSEXP);
+    rcpp_result_gen = Rcpp::wrap(setuplambdaMVR_colwise(Y, Z, nlam, setlam));
+    return rcpp_result_gen;
+END_RCPP
+}
+// setuplambdaMVR_lasso
+MatrixXd setuplambdaMVR_lasso(MatrixXd Y, MatrixXd Z, int nlam, VectorXd setlam);
+RcppExport SEXP _tensorMQR1_setuplambdaMVR_lasso(SEXP YSEXP, SEXP ZSEXP, SEXP nlamSEXP, SEXP setlamSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< MatrixXd >::type Y(YSEXP);
+    Rcpp::traits::input_parameter< MatrixXd >::type Z(ZSEXP);
+    Rcpp::traits::input_parameter< int >::type nlam(nlamSEXP);
+    Rcpp::traits::input_parameter< VectorXd >::type setlam(setlamSEXP);
+    rcpp_result_gen = Rcpp::wrap(setuplambdaMVR_lasso(Y, Z, nlam, setlam));
+    return rcpp_result_gen;
+END_RCPP
+}
+// setuplambdaMVR_blockwise
+VectorXd setuplambdaMVR_blockwise(MatrixXd Y, MatrixXd Z, int nlam, VectorXd setlam, VectorXi lengths);
+RcppExport SEXP _tensorMQR1_setuplambdaMVR_blockwise(SEXP YSEXP, SEXP ZSEXP, SEXP nlamSEXP, SEXP setlamSEXP, SEXP lengthsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< MatrixXd >::type Y(YSEXP);
+    Rcpp::traits::input_parameter< MatrixXd >::type Z(ZSEXP);
+    Rcpp::traits::input_parameter< int >::type nlam(nlamSEXP);
+    Rcpp::traits::input_parameter< VectorXd >::type setlam(setlamSEXP);
+    Rcpp::traits::input_parameter< VectorXi >::type lengths(lengthsSEXP);
+    rcpp_result_gen = Rcpp::wrap(setuplambdaMVR_blockwise(Y, Z, nlam, setlam, lengths));
+    return rcpp_result_gen;
+END_RCPP
+}
+// setuplambdaMVR_glasso
+MatrixXd setuplambdaMVR_glasso(MatrixXd Y, MatrixXd Z, int nlam, VectorXd setlam, VectorXi lengths);
+RcppExport SEXP _tensorMQR1_setuplambdaMVR_glasso(SEXP YSEXP, SEXP ZSEXP, SEXP nlamSEXP, SEXP setlamSEXP, SEXP lengthsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< MatrixXd >::type Y(YSEXP);
+    Rcpp::traits::input_parameter< MatrixXd >::type Z(ZSEXP);
+    Rcpp::traits::input_parameter< int >::type nlam(nlamSEXP);
+    Rcpp::traits::input_parameter< VectorXd >::type setlam(setlamSEXP);
+    Rcpp::traits::input_parameter< VectorXi >::type lengths(lengthsSEXP);
+    rcpp_result_gen = Rcpp::wrap(setuplambdaMVR_glasso(Y, Z, nlam, setlam, lengths));
+    return rcpp_result_gen;
+END_RCPP
+}
+// EstMVR_colwise
+List EstMVR_colwise(MatrixXd Y, MatrixXd Z, MatrixXd W, VectorXd lambda, List optsList, List optsList_pen);
+RcppExport SEXP _tensorMQR1_EstMVR_colwise(SEXP YSEXP, SEXP ZSEXP, SEXP WSEXP, SEXP lambdaSEXP, SEXP optsListSEXP, SEXP optsList_penSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< MatrixXd >::type Y(YSEXP);
+    Rcpp::traits::input_parameter< MatrixXd >::type Z(ZSEXP);
+    Rcpp::traits::input_parameter< MatrixXd >::type W(WSEXP);
+    Rcpp::traits::input_parameter< VectorXd >::type lambda(lambdaSEXP);
+    Rcpp::traits::input_parameter< List >::type optsList(optsListSEXP);
+    Rcpp::traits::input_parameter< List >::type optsList_pen(optsList_penSEXP);
+    rcpp_result_gen = Rcpp::wrap(EstMVR_colwise(Y, Z, W, lambda, optsList, optsList_pen));
+    return rcpp_result_gen;
+END_RCPP
+}
+// EstMVR_lasso
+List EstMVR_lasso(MatrixXd Y, MatrixXd Z1, MatrixXd W, MatrixXd lambda, List optsList, List optsList_pen);
+RcppExport SEXP _tensorMQR1_EstMVR_lasso(SEXP YSEXP, SEXP Z1SEXP, SEXP WSEXP, SEXP lambdaSEXP, SEXP optsListSEXP, SEXP optsList_penSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< MatrixXd >::type Y(YSEXP);
+    Rcpp::traits::input_parameter< MatrixXd >::type Z1(Z1SEXP);
+    Rcpp::traits::input_parameter< MatrixXd >::type W(WSEXP);
+    Rcpp::traits::input_parameter< MatrixXd >::type lambda(lambdaSEXP);
+    Rcpp::traits::input_parameter< List >::type optsList(optsListSEXP);
+    Rcpp::traits::input_parameter< List >::type optsList_pen(optsList_penSEXP);
+    rcpp_result_gen = Rcpp::wrap(EstMVR_lasso(Y, Z1, W, lambda, optsList, optsList_pen));
+    return rcpp_result_gen;
+END_RCPP
+}
+// EstMVR_blockwise
+List EstMVR_blockwise(MatrixXd Y, MatrixXd Z, MatrixXd W, VectorXd lambda, VectorXi lengths, List optsList, List optsList_pen);
+RcppExport SEXP _tensorMQR1_EstMVR_blockwise(SEXP YSEXP, SEXP ZSEXP, SEXP WSEXP, SEXP lambdaSEXP, SEXP lengthsSEXP, SEXP optsListSEXP, SEXP optsList_penSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< MatrixXd >::type Y(YSEXP);
+    Rcpp::traits::input_parameter< MatrixXd >::type Z(ZSEXP);
+    Rcpp::traits::input_parameter< MatrixXd >::type W(WSEXP);
+    Rcpp::traits::input_parameter< VectorXd >::type lambda(lambdaSEXP);
+    Rcpp::traits::input_parameter< VectorXi >::type lengths(lengthsSEXP);
+    Rcpp::traits::input_parameter< List >::type optsList(optsListSEXP);
+    Rcpp::traits::input_parameter< List >::type optsList_pen(optsList_penSEXP);
+    rcpp_result_gen = Rcpp::wrap(EstMVR_blockwise(Y, Z, W, lambda, lengths, optsList, optsList_pen));
+    return rcpp_result_gen;
+END_RCPP
+}
+// EstMVR_glasso
+List EstMVR_glasso(MatrixXd Y, MatrixXd Z, MatrixXd W, MatrixXd lambda, VectorXi lengths, List optsList, List optsList_pen);
+RcppExport SEXP _tensorMQR1_EstMVR_glasso(SEXP YSEXP, SEXP ZSEXP, SEXP WSEXP, SEXP lambdaSEXP, SEXP lengthsSEXP, SEXP optsListSEXP, SEXP optsList_penSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< MatrixXd >::type Y(YSEXP);
+    Rcpp::traits::input_parameter< MatrixXd >::type Z(ZSEXP);
+    Rcpp::traits::input_parameter< MatrixXd >::type W(WSEXP);
+    Rcpp::traits::input_parameter< MatrixXd >::type lambda(lambdaSEXP);
+    Rcpp::traits::input_parameter< VectorXi >::type lengths(lengthsSEXP);
+    Rcpp::traits::input_parameter< List >::type optsList(optsListSEXP);
+    Rcpp::traits::input_parameter< List >::type optsList_pen(optsList_penSEXP);
+    rcpp_result_gen = Rcpp::wrap(EstMVR_glasso(Y, Z, W, lambda, lengths, optsList, optsList_pen));
+    return rcpp_result_gen;
+END_RCPP
+}
+// EstUnconstr
+List EstUnconstr(MatrixXd Y, MatrixXd Z, MatrixXd S, MatrixXd A, MatrixXd B, MatrixXd C, List optsList);
+RcppExport SEXP _tensorMQR1_EstUnconstr(SEXP YSEXP, SEXP ZSEXP, SEXP SSEXP, SEXP ASEXP, SEXP BSEXP, SEXP CSEXP, SEXP optsListSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< MatrixXd >::type Y(YSEXP);
+    Rcpp::traits::input_parameter< MatrixXd >::type Z(ZSEXP);
     Rcpp::traits::input_parameter< MatrixXd >::type S(SSEXP);
     Rcpp::traits::input_parameter< MatrixXd >::type A(ASEXP);
     Rcpp::traits::input_parameter< MatrixXd >::type B(BSEXP);
     Rcpp::traits::input_parameter< MatrixXd >::type C(CSEXP);
-    Rcpp::traits::input_parameter< VectorXd >::type mu(muSEXP);
     Rcpp::traits::input_parameter< List >::type optsList(optsListSEXP);
-    rcpp_result_gen = Rcpp::wrap(EstUnconstr(Y, X, S, A, B, C, mu, optsList));
+    rcpp_result_gen = Rcpp::wrap(EstUnconstr(Y, Z, S, A, B, C, optsList));
     return rcpp_result_gen;
 END_RCPP
 }
 // Estimation
-List Estimation(MatrixXd Y, MatrixXd X, MatrixXd S, MatrixXd U, MatrixXd V, VectorXd mu, List optsList);
-RcppExport SEXP _tensorMQR1_Estimation(SEXP YSEXP, SEXP XSEXP, SEXP SSEXP, SEXP USEXP, SEXP VSEXP, SEXP muSEXP, SEXP optsListSEXP) {
+List Estimation(MatrixXd Y, MatrixXd Z, MatrixXd S, MatrixXd U, MatrixXd V, List optsList);
+RcppExport SEXP _tensorMQR1_Estimation(SEXP YSEXP, SEXP ZSEXP, SEXP SSEXP, SEXP USEXP, SEXP VSEXP, SEXP optsListSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< MatrixXd >::type Y(YSEXP);
-    Rcpp::traits::input_parameter< MatrixXd >::type X(XSEXP);
+    Rcpp::traits::input_parameter< MatrixXd >::type Z(ZSEXP);
     Rcpp::traits::input_parameter< MatrixXd >::type S(SSEXP);
     Rcpp::traits::input_parameter< MatrixXd >::type U(USEXP);
     Rcpp::traits::input_parameter< MatrixXd >::type V(VSEXP);
-    Rcpp::traits::input_parameter< VectorXd >::type mu(muSEXP);
     Rcpp::traits::input_parameter< List >::type optsList(optsListSEXP);
-    rcpp_result_gen = Rcpp::wrap(Estimation(Y, X, S, U, V, mu, optsList));
+    rcpp_result_gen = Rcpp::wrap(Estimation(Y, Z, S, U, V, optsList));
     return rcpp_result_gen;
 END_RCPP
 }
 // EstPenColumn
-List EstPenColumn(MatrixXd Y, MatrixXd X, MatrixXd S, MatrixXd U, MatrixXd V, VectorXd lambda, List optsList, List optsList_pen);
-RcppExport SEXP _tensorMQR1_EstPenColumn(SEXP YSEXP, SEXP XSEXP, SEXP SSEXP, SEXP USEXP, SEXP VSEXP, SEXP lambdaSEXP, SEXP optsListSEXP, SEXP optsList_penSEXP) {
+List EstPenColumn(MatrixXd Y, MatrixXd Z, MatrixXd S, MatrixXd U, MatrixXd V, VectorXd lambda, List optsList, List optsList_pen);
+RcppExport SEXP _tensorMQR1_EstPenColumn(SEXP YSEXP, SEXP ZSEXP, SEXP SSEXP, SEXP USEXP, SEXP VSEXP, SEXP lambdaSEXP, SEXP optsListSEXP, SEXP optsList_penSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< MatrixXd >::type Y(YSEXP);
-    Rcpp::traits::input_parameter< MatrixXd >::type X(XSEXP);
+    Rcpp::traits::input_parameter< MatrixXd >::type Z(ZSEXP);
     Rcpp::traits::input_parameter< MatrixXd >::type S(SSEXP);
     Rcpp::traits::input_parameter< MatrixXd >::type U(USEXP);
     Rcpp::traits::input_parameter< MatrixXd >::type V(VSEXP);
     Rcpp::traits::input_parameter< VectorXd >::type lambda(lambdaSEXP);
     Rcpp::traits::input_parameter< List >::type optsList(optsListSEXP);
     Rcpp::traits::input_parameter< List >::type optsList_pen(optsList_penSEXP);
-    rcpp_result_gen = Rcpp::wrap(EstPenColumn(Y, X, S, U, V, lambda, optsList, optsList_pen));
+    rcpp_result_gen = Rcpp::wrap(EstPenColumn(Y, Z, S, U, V, lambda, optsList, optsList_pen));
     return rcpp_result_gen;
 END_RCPP
 }
 // EstPenSingle
-List EstPenSingle(MatrixXd Y, MatrixXd X, MatrixXd S, MatrixXd U, MatrixXd V, VectorXd lambda, List optsList, List optsList_pen);
-RcppExport SEXP _tensorMQR1_EstPenSingle(SEXP YSEXP, SEXP XSEXP, SEXP SSEXP, SEXP USEXP, SEXP VSEXP, SEXP lambdaSEXP, SEXP optsListSEXP, SEXP optsList_penSEXP) {
+List EstPenSingle(MatrixXd Y, MatrixXd Z, MatrixXd S, MatrixXd U, MatrixXd V, VectorXd lambda, List optsList, List optsList_pen);
+RcppExport SEXP _tensorMQR1_EstPenSingle(SEXP YSEXP, SEXP ZSEXP, SEXP SSEXP, SEXP USEXP, SEXP VSEXP, SEXP lambdaSEXP, SEXP optsListSEXP, SEXP optsList_penSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< MatrixXd >::type Y(YSEXP);
-    Rcpp::traits::input_parameter< MatrixXd >::type X(XSEXP);
+    Rcpp::traits::input_parameter< MatrixXd >::type Z(ZSEXP);
     Rcpp::traits::input_parameter< MatrixXd >::type S(SSEXP);
     Rcpp::traits::input_parameter< MatrixXd >::type U(USEXP);
     Rcpp::traits::input_parameter< MatrixXd >::type V(VSEXP);
     Rcpp::traits::input_parameter< VectorXd >::type lambda(lambdaSEXP);
     Rcpp::traits::input_parameter< List >::type optsList(optsListSEXP);
     Rcpp::traits::input_parameter< List >::type optsList_pen(optsList_penSEXP);
-    rcpp_result_gen = Rcpp::wrap(EstPenSingle(Y, X, S, U, V, lambda, optsList, optsList_pen));
+    rcpp_result_gen = Rcpp::wrap(EstPenSingle(Y, Z, S, U, V, lambda, optsList, optsList_pen));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -200,10 +348,20 @@ static const R_CallMethodDef CallEntries[] = {
     {"_tensorMQR1_produceX2", (DL_FUNC) &_tensorMQR1_produceX2, 1},
     {"_tensorMQR1_TransferT2P", (DL_FUNC) &_tensorMQR1_TransferT2P, 4},
     {"_tensorMQR1_TransferP2T", (DL_FUNC) &_tensorMQR1_TransferP2T, 4},
+    {"_tensorMQR1_selectedP2X", (DL_FUNC) &_tensorMQR1_selectedP2X, 2},
+    {"_tensorMQR1_selectedX2D", (DL_FUNC) &_tensorMQR1_selectedX2D, 4},
     {"_tensorMQR1_setuplambda", (DL_FUNC) &_tensorMQR1_setuplambda, 8},
     {"_tensorMQR1_EstFR", (DL_FUNC) &_tensorMQR1_EstFR, 2},
-    {"_tensorMQR1_EstUnconstr", (DL_FUNC) &_tensorMQR1_EstUnconstr, 8},
-    {"_tensorMQR1_Estimation", (DL_FUNC) &_tensorMQR1_Estimation, 7},
+    {"_tensorMQR1_setuplambdaMVR_colwise", (DL_FUNC) &_tensorMQR1_setuplambdaMVR_colwise, 4},
+    {"_tensorMQR1_setuplambdaMVR_lasso", (DL_FUNC) &_tensorMQR1_setuplambdaMVR_lasso, 4},
+    {"_tensorMQR1_setuplambdaMVR_blockwise", (DL_FUNC) &_tensorMQR1_setuplambdaMVR_blockwise, 5},
+    {"_tensorMQR1_setuplambdaMVR_glasso", (DL_FUNC) &_tensorMQR1_setuplambdaMVR_glasso, 5},
+    {"_tensorMQR1_EstMVR_colwise", (DL_FUNC) &_tensorMQR1_EstMVR_colwise, 6},
+    {"_tensorMQR1_EstMVR_lasso", (DL_FUNC) &_tensorMQR1_EstMVR_lasso, 6},
+    {"_tensorMQR1_EstMVR_blockwise", (DL_FUNC) &_tensorMQR1_EstMVR_blockwise, 7},
+    {"_tensorMQR1_EstMVR_glasso", (DL_FUNC) &_tensorMQR1_EstMVR_glasso, 7},
+    {"_tensorMQR1_EstUnconstr", (DL_FUNC) &_tensorMQR1_EstUnconstr, 7},
+    {"_tensorMQR1_Estimation", (DL_FUNC) &_tensorMQR1_Estimation, 6},
     {"_tensorMQR1_EstPenColumn", (DL_FUNC) &_tensorMQR1_EstPenColumn, 8},
     {"_tensorMQR1_EstPenSingle", (DL_FUNC) &_tensorMQR1_EstPenSingle, 8},
     {NULL, NULL, 0}

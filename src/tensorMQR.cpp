@@ -1,10 +1,17 @@
 //[[Rcpp::depends(RcppEigen)]]
 #include "mqr.h"
+#include "mvrhd.h"
+
+//----------------------------------------------------------------**
+//***----------------------parameters for penalization---------------**
+struct Options opts;
+
+struct Options_pen opts_pen;
 
 //----------------------------------------------------------------**
 //***--------------------Estimation without penalty---------------**
 // [[Rcpp::export]]
-List EstUnconstr(MatrixXd Y, MatrixXd X, MatrixXd S, MatrixXd A, MatrixXd B, MatrixXd C, VectorXd mu, List optsList)
+List EstUnconstr(MatrixXd Y, MatrixXd Z, MatrixXd S, MatrixXd A, MatrixXd B, MatrixXd C, List optsList)
 {	
 	opts.n = as<int>(optsList["n"]);
 	opts.r1 = as<int>(optsList["r1"]);
@@ -17,63 +24,54 @@ List EstUnconstr(MatrixXd Y, MatrixXd X, MatrixXd S, MatrixXd A, MatrixXd B, Mat
 	opts.max_step = as<int>(optsList["max_step"]);
 	opts.eps1 = as<double>(optsList["eps1"]);
 	opts.max_step1 = as<int>(optsList["max_step1"]);
-	opts.intercept = as<int>(optsList["intercept"]);
 	
 	double  likhd0 = pow(10, 6), likhd1 = 0;
-	int n = Y.rows(),q = opts.q;
-	opts.n=n;
-	MatrixXd Dnew,Cnew,Anew,Bnew,Snew, Y1=Y, Z = produceZ(X);
+	opts.n = Y.rows();
+	MatrixXd Dnew,Cnew,Anew,Bnew,Snew;
 	VectorXi convergence1;
-	VectorXd Ones;
-	Ones.setOnes(n);
 	List fit;
 	int step = 0;
 	while (step<opts.max_step1) {
 		convergence1 = VectorXi::Constant(4, 1);
 		step = step + 1;
-		Snew = updateS(Y1, Z, A, B, C);
+		Snew = updateS(Y, Z, A, B, C);
 		Dnew = C * Snew*kroneckerProduct(B.transpose(), A.transpose());
-		likhd1 = (Y1 - Z * Dnew.transpose()).squaredNorm();
+		likhd1 = (Y - Z * Dnew.transpose()).squaredNorm();
 		if (likhd1<likhd0) {
 			S = Snew;
 			likhd0 = likhd1;
 		}
 		else convergence1[0]=0;
-		fit = updateC(Y1, Z, A, B, C, S);
+		fit = updateC(Y, Z, A, B, C, S);
 		Cnew = fit[0];
 		Snew = fit[1];
 		Dnew = Cnew * Snew *kroneckerProduct(B.transpose(), A.transpose());
-		likhd1 = (Y1 - Z * Dnew.transpose()).squaredNorm();
+		likhd1 = (Y - Z * Dnew.transpose()).squaredNorm();
 		if (likhd1<likhd0) {
 			C = Cnew;
 			S = Snew;
 			likhd0 = likhd1;
 		}
 		else convergence1[1]=0;
-		fit = updateA(Y1, Z, A, B, C, S);
+		fit = updateA(Y, Z, A, B, C, S);
 		Anew = fit[0];
 		Snew = fit[1];
 		Dnew = C * Snew *kroneckerProduct(B.transpose(), Anew.transpose());
-		likhd1 = (Y1 - Z * Dnew.transpose()).squaredNorm();
+		likhd1 = (Y - Z * Dnew.transpose()).squaredNorm();
 		if (likhd1<likhd0) {
 			A = Anew;
 			S = Snew;
 			likhd0 = likhd1;
 		}
 		else convergence1[2]=0;
-		fit = updateB(Y1, Z, A, B, C, S);
+		fit = updateB(Y, Z, A, B, C, S);
 		Bnew = fit[0];
 		Snew = fit[1];		
 		Dnew = C * Snew *kroneckerProduct(Bnew.transpose(), A.transpose());
-		likhd1 = (Y1  - Z * Dnew.transpose()).squaredNorm();
+		likhd1 = (Y  - Z * Dnew.transpose()).squaredNorm();
 		if (likhd1<likhd0) {
 			B = Bnew;
 			S = Snew;
-			if(opts.intercept){
-				mu = (Y - Z * Dnew.transpose()).colwise().sum()/n;
-				Y1 = Y - kroneckerProduct(Ones,mu);
-				Y1.resize(n,q);	
-			}
 			if ((likhd0 - likhd1) / likhd0<opts.eps) break;
 			else  likhd0 = likhd1;		
 		}
@@ -81,9 +79,8 @@ List EstUnconstr(MatrixXd Y, MatrixXd X, MatrixXd S, MatrixXd A, MatrixXd B, Mat
 		if(convergence1.sum()==0) break;
 	}
 	Dnew = C * S * kroneckerProduct(B.transpose(), A.transpose());
-	return List::create(Named("likhd") = likhd0, Named("Dnew") = Dnew, Named("A") = A, Named("B") = B, Named("C") = C,Named("S") = S, Named("mu") = mu);
+	return List::create(Named("likhd") = likhd0, Named("Dnew") = Dnew, Named("A") = A, Named("B") = B, Named("C") = C,Named("S") = S);
 }
-
 //----------------------------------------------------------------**
 //***--------------------updateV----------------------------------**
 List updateV(MatrixXd Y, MatrixXd Z, MatrixXd U, MatrixXd S)
@@ -187,7 +184,8 @@ MatrixXd updateS_sym(MatrixXd Y, MatrixXd Z, MatrixXd A, MatrixXd C)
 	return Snew;
 }
 
-
+//----------------------------------------------------------------**
+//***--------------------caculate the loss function---------------**
 double lossFunction(MatrixXd Y, MatrixXd Z, MatrixXd VS, MatrixXd U, MatrixXd VSUU, int isPen, double lambda, int isvsuu)
 {
 	double likhd;
@@ -226,6 +224,7 @@ double lossFunction(MatrixXd Y, MatrixXd Z, MatrixXd VS, MatrixXd U, MatrixXd VS
 	}
 	return likhd;
 }
+
 // ==================================================================================
 // ================= Curvilinear searching algorithm ================================
 double Curvilinear(MatrixXd &Unew, MatrixXd &VSUU, double &likhd1, double tau, double Ck, double deriv, 
@@ -331,7 +330,7 @@ List updateU(MatrixXd Y, MatrixXd Z, MatrixXd VS, MatrixXd U0)
 //----------------------------------------------------------------**
 //***--------------------Estimation without penalty---------------**
 // [[Rcpp::export]]
-List Estimation(MatrixXd Y, MatrixXd X, MatrixXd S, MatrixXd U, MatrixXd V, VectorXd mu, List optsList)
+List Estimation(MatrixXd Y, MatrixXd Z, MatrixXd S, MatrixXd U, MatrixXd V, List optsList)
 {
 	/*
 	Input:
@@ -363,51 +362,42 @@ List Estimation(MatrixXd Y, MatrixXd X, MatrixXd S, MatrixXd U, MatrixXd V, Vect
 	opts.r3 = as<int>(optsList["r3"]);
 	opts.p = as<int>(optsList["p"]);
 	opts.q = as<int>(optsList["q"]);
-	opts.intercept = as<int>(optsList["intercept"]);
 	
-	int n = Y.rows(), q = opts.q;
+	int n = Y.rows(), step = 0;
 	double  likhd0 = pow(10, 6), likhd1 = 0;
 	opts.n = n;
-	MatrixXd Dnew, Unew, Vnew, Snew, Y1=Y, Z = produceZ(X);
-	VectorXd convergence1;	
-	VectorXd Ones;
-	Ones.setOnes(n);
+	MatrixXd Dnew, Unew, Vnew, Snew;
+	VectorXi convergence1;		
 	List fit;
-	int step = 0;
 	while (step<opts.max_step1) {
-		convergence1 = VectorXd::Constant(3, 1);
+		convergence1 = VectorXi::Constant(3, 1);
 		step++;
 		
-		Snew = updateS_sym(Y1, Z, U, V);
+		Snew = updateS_sym(Y, Z, U, V);
 		Dnew = V*Snew*kroneckerProduct(U.transpose(), U.transpose());
-		likhd1 = (Y1 - Z * Dnew.transpose()).squaredNorm()/2;	
+		likhd1 = (Y - Z * Dnew.transpose()).squaredNorm()/2;	
 		if (likhd1<likhd0) {
 			S = Snew;
 			likhd0 = likhd1;
 		}
 		else convergence1[0]=0;		
-		fit = updateV(Y1, Z, U, S);
+		fit = updateV(Y, Z, U, S);
 		Vnew = fit[0];
 		Snew = fit[1];
 		Dnew = Vnew*Snew*kroneckerProduct(U.transpose(), U.transpose());
-		likhd1 = (Y1 - Z * Dnew.transpose()).squaredNorm()/2;
+		likhd1 = (Y - Z * Dnew.transpose()).squaredNorm()/2;
 		if (likhd1<likhd0) {
 			V = Vnew;
 			S = Snew;
 			likhd0 = likhd1;
 		}
 		else convergence1[1]=0;
-		fit = updateU(Y1, Z, V*S, U);	
+		fit = updateU(Y, Z, V*S, U);	
         Unew = fit[1];		
 		Dnew = V*S*kroneckerProduct(Unew.transpose(), Unew.transpose());
 		likhd1 = fit[0];
 		if (likhd1<likhd0) {
 			U = Unew;
-			if(opts.intercept){
-				mu = (Y - Z * Dnew.transpose()).colwise().sum()/n;
-				Y1 = Y - kroneckerProduct(Ones,mu);
-				Y1.resize(n,q);	
-			}
 			if ((likhd0 - likhd1) / likhd0<opts.ftol) break;
 			else  likhd0 = likhd1;		
 		}
@@ -415,9 +405,11 @@ List Estimation(MatrixXd Y, MatrixXd X, MatrixXd S, MatrixXd U, MatrixXd V, Vect
 		if(convergence1.sum()==0) break;
 	}
 	Dnew = V*S*kroneckerProduct(U.transpose(), U.transpose());
-	return List::create(Named("likhd") = 2*likhd0, Named("Dnew") = Dnew, Named("S") = S, Named("U")=U, Named("V")=V, Named("mu") = mu);
+	return List::create(Named("likhd") = 2*likhd0, Named("Dnew") = Dnew, Named("S") = S, Named("U")=U, Named("V")=V);
 }
 
+//----------------------------------------------------------------**
+//***-------The derivative loass by penalizing U -----------------**
 void derivF_hdU(MatrixXd &Gamma, MatrixXd Y, MatrixXd Z, MatrixXd U, MatrixXd V, MatrixXd S, MatrixXd alpha, double lambda)
 {
 	int k, t, m, r1=opts.r1, p=opts.p, n=opts.n;
@@ -444,6 +436,8 @@ void derivF_hdU(MatrixXd &Gamma, MatrixXd Y, MatrixXd Z, MatrixXd U, MatrixXd V,
 	for(k = 1; k < p; k++) Gamma.row(k) += 2*n*derivPen[k]*U.row(k)/MAX(U.row(k).norm(),opts_pen.thresh);
 }
 
+//----------------------------------------------------------------**
+//***-------The derivative loass by penalizing d -----------------**
 void derivF_hd(MatrixXd &Gamma, MatrixXd Y, MatrixXd Z, MatrixXd U, MatrixXd V, MatrixXd S, MatrixXd alpha, double lambda)
 {
 	int k, t, j, m, r1=opts.r1, r3=opts.r3, p=opts.p, n=opts.n;
@@ -533,6 +527,7 @@ void derivF_hd(MatrixXd &Gamma, MatrixXd Y, MatrixXd Z, MatrixXd U, MatrixXd V, 
 		for(k = 1; k < p; k++) Gamma.row(k) += 2*derivPen[k]*dGU.row(k)/MAX(Unorm(l,k),opts_pen.thresh);		
 	}
 }
+
 //***-------------------------------------------------------------**
 // ======================= updateU with penalty======================================
 List updateU_Approx_onStief(MatrixXd Y, MatrixXd Z, MatrixXd S, MatrixXd U0, MatrixXd V, double lambda1)
@@ -634,7 +629,7 @@ List updateU_Approx_onR(MatrixXd Y, MatrixXd Z, MatrixXd S, MatrixXd U0, MatrixX
 //***-------------------------------------------------------------**
 //***------main function: Estimation with penalizing coefficients in a whole column -----------------**
 // [[Rcpp::export]]
-List EstPenColumn(MatrixXd Y, MatrixXd X, MatrixXd S, MatrixXd U, MatrixXd V, VectorXd lambda, List optsList, List optsList_pen)
+List EstPenColumn(MatrixXd Y, MatrixXd Z, MatrixXd S, MatrixXd U, MatrixXd V, VectorXd lambda, List optsList, List optsList_pen)
 {
 	/*
 	Input:
@@ -668,7 +663,6 @@ List EstPenColumn(MatrixXd Y, MatrixXd X, MatrixXd S, MatrixXd U, MatrixXd V, Ve
 	opts.r3 = as<int>(optsList["r3"]);
 	opts.p = as<int>(optsList["p"]);
 	opts.q = as<int>(optsList["q"]);
-	opts.intercept = as<int>(optsList["intercept"]);
 	opts.onStiefel = as<int>(optsList["onStiefel"]);	
 
 	opts_pen.gamma_tanh = as<double>(optsList_pen["gamma_tanh"]);
@@ -688,7 +682,7 @@ List EstPenColumn(MatrixXd Y, MatrixXd X, MatrixXd S, MatrixXd U, MatrixXd V, Ve
 	int l,j, step,nlam=opts_pen.nlam, p=opts.p, q=opts.q, r1=opts.r1, r3=opts.r3,n=Y.rows();
 	double  likhd0 = pow(10, 6), lambda1, likhd1 = 0, thresh=0;
 	opts.n=n;
-	MatrixXd Dnew, Unew, Snew, Vnew, Z = produceZ(X);
+	MatrixXd Dnew, Unew, Snew, Vnew;
 	VectorXi activeA, convergence1, df;	
 	df = VectorXi::Constant(nlam, 0);
 	MatrixXi betapath = MatrixXi::Constant(p-1, nlam, 0);
@@ -777,10 +771,11 @@ List EstPenColumn(MatrixXd Y, MatrixXd X, MatrixXd S, MatrixXd U, MatrixXd V, Ve
 	}// end for
 	return List::create(Named("likhd") = 2*likhd, Named("betapath") = betapath, Named("df") = df, Named("lambda")=lambda,Named("Upath")=Upath,Named("Vpath")=Vpath,Named("Spath")=Spath);
 }
+
 //***-------------------------------------------------------------**
 //***------main function: Estimation with penalizing coefficient in single row -----------------**
 // [[Rcpp::export]]
-List EstPenSingle(MatrixXd Y, MatrixXd X, MatrixXd S, MatrixXd U, MatrixXd V, VectorXd lambda, List optsList, List optsList_pen)
+List EstPenSingle(MatrixXd Y, MatrixXd Z, MatrixXd S, MatrixXd U, MatrixXd V, VectorXd lambda, List optsList, List optsList_pen)
 {
 	/*
 	Input:
@@ -812,7 +807,6 @@ List EstPenSingle(MatrixXd Y, MatrixXd X, MatrixXd S, MatrixXd U, MatrixXd V, Ve
 	opts.r3 = as<int>(optsList["r3"]);
 	opts.p = as<int>(optsList["p"]);
 	opts.q = as<int>(optsList["q"]);
-	opts.intercept = as<int>(optsList["intercept"]);
 	opts.onStiefel = as<int>(optsList["onStiefel"]);	
 
 	opts_pen.gamma_tanh = as<double>(optsList_pen["gamma_tanh"]);
@@ -832,7 +826,7 @@ List EstPenSingle(MatrixXd Y, MatrixXd X, MatrixXd S, MatrixXd U, MatrixXd V, Ve
 	int l,j, step,nlam=opts_pen.nlam, p=opts.p, q=opts.q, r1=opts.r1, r3=opts.r3,n=Y.rows();
 	double  likhd0 = pow(10, 6), lambda1, likhd1 = 0, thresh=0;
 	opts.n=n;
-	MatrixXd Dnew, Unew, Snew, Vnew, Z = produceZ(X);
+	MatrixXd Dnew, Unew, Snew, Vnew;
 	VectorXd likhd = VectorXd::Constant(nlam, 0);
 	VectorXi df = VectorXi::Constant(nlam, 0), activeX, convergence1;
 	MatrixXd Upath, Vpath, Spath, temp;

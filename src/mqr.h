@@ -14,54 +14,6 @@ using namespace Rcpp;
 using namespace Eigen;
 
 //----------------------------------------------------------------**
-//***----------------------parameters for penalization---------------**
-struct Options
-{
-	int r1;
-	int r2;
-	int r3;
-	int p;
-	int q;
-	int K;
-	int n;
-	double eps;
-	double eps1;
-	double utol;
-	double ftol;
-	double Pitol;     
-	double tau_min;
-	double eta;
-	double tiny; 
-	double rhols; 
-	double gamma; 
-	int is_LR;	
-	int max_step;
-    int max_step1;	
-	int onStiefel;
-	int intercept;
-}opts;
-
-struct Options_pen
-{
-	int pen; 
-	int nlam;
-	int dfmax;
-	int isPenU;
-	int isPenColumn;
-	int isFISC;
-	double lam_max;
-	double lam_min;
-	double alpha;
-	double gamma_pen;
-	double lambda;
-	double gamma_tanh;
-	double thresh;
-	double delta;
-	double max_step;
-	double max_step1;
-}opts_pen;
-
-//----------------------------------------------------------------**
 //***----------------------------sequece--------------------------**
 VectorXi SEQ(int min, int max, int by)
 {
@@ -453,17 +405,15 @@ MatrixXd submatrix_row(MatrixXd A, VectorXi b)
 }
 //----------------------------------------------------------------**
 //***--------------------penalty----------------------------------**
-double penalties(double z, double v, double lambda, double alpha, double gamma, double penalty) {
+double penalties(double z, double v, double lambda, double alpha, double gamma, int penalty) {
 	double beta=0,l1,l2;
 	l1 = lambda*alpha; 
 	l2 = lambda*(1-alpha);
-	if (penalty==1)
-	{			  
+	if (penalty==1){			  
 		if (z > l1) beta = (z-l1)/(v*(1+l2));
 		if (z < -l1) beta = (z+l1)/(v*(1+l2));
 	}
-	if (penalty==2)
-	{
+	if (penalty==2){
 		double s = 0;
 		if (z > 0) s = 1;
 		else if (z < 0) s = -1;
@@ -471,8 +421,7 @@ double penalties(double z, double v, double lambda, double alpha, double gamma, 
 		else if (fabs(z) <= gamma*l1*(1+l2)) beta = s*(fabs(z)-l1)/(v*(1+l2-1/gamma));
 		else beta = z/(v*(1+l2));
 	}
-	if (penalty==3)
-	{
+	if (penalty==3){
 		double s = 0;
 		if (z > 0) s = 1;
 		else if (z < 0) s = -1;
@@ -552,45 +501,93 @@ MatrixXd produceX2(MatrixXd X){
 	MatrixXd Z  = MatrixXd::Constant(n, p*(p+1)/2, 0);
 	for (j = 0; j < p; j++) 
 		for (k = j; k < p; k++)
-			Z.col(count++) = X.col(j)*X.col(k);
+			Z.col(count++) = X.col(j).array()*X.col(k).array();
 	return Z;
 }
 //----------------------------------------------------------------**
 //***--------Transfer Tensor to Parametric vectors ---------------**
 // [[Rcpp::export]]
-MatrixXd TransferT2P(MatrixXd D3, int d, int p, int q){	
+MatrixXd TransferT2P(MatrixXd D, int d, int p, int q){	
     if(d>3||d<1) stop("d must be among 1, 2, or 3!");
-	int i, j, k, count=0, n=q*p*(p+1)/2;
-	MatrixXd D1;;
-	VectorXd coef  = VectorXd::Constant(n, 0);
-	if(d==1) D1 = D3;
-	else D1 = TransferModalUnfoldings(D3,d,1,p,p,q);
-	for(i = 0; i < q; i++)
-		for (j = i*p; j < (i+1)*p; j++) 
-			for (k = j-i*p; k < p; k++){
-				if(k==j-i*p) coef[count++] = D1(k,j);
-				else coef[count++] = 2*D1(k,j);
-			}
+	int i, j, k, count, n=p*(p+1)/2;
+	MatrixXd D3,coef;
+	coef  = MatrixXd::Constant(q,n,0);
+	if(d==3) D3 = D;
+	else D3 = TransferModalUnfoldings(D,d,3,p,p,q);
+	for(i = 0; i < q; i++){
+		count=0;
+		for (j = 0; j < p; j++){
+			coef(i,count++) = D3(i,j*p+j);
+			for (k = j+1; k < p; k++)				
+				coef(i,count++) = 2*D3(i,j*p+k);
+		}
+	}
 	return coef;
 }
 //----------------------------------------------------------------**
 //***--------Transfer Parametric vectors to Tensor ---------------**
 // [[Rcpp::export]]
-MatrixXd TransferP2T(VectorXd coef, int d, int p, int q){	
+MatrixXd TransferP2T(MatrixXd coef, int d, int p, int q){	
     if(d>3||d<1) stop("d must be among 1, 2, or 3!");
-	int i, j, k, ip, count=0;
-	MatrixXd D1 = MatrixXd::Constant(p, p*q, 0);
+	int i, j, k, count;
+	MatrixXd D1, D3 = MatrixXd::Constant(q, p*p, 0);
 	for(i = 0; i < q; i++){
-		ip = i*p;
-		for (k = 0; k < p; k++) {
-			D1(k,k+ip) = coef[count++];
-			for (j = k+1; j < p; j++) D1(k,j+ip) = coef[count++]/2;						
-		}		
-		for (j = ip; j < ip+p; j++)			
-			for (k = j-ip+1; k < p; k++) D1(k,j) = D1(j-ip,k+ip);			
+		count=0;
+		for (j = 0; j < p; j++){
+			for (k = j; k < p; k++)				
+				D3(i,j*p+k) = coef(i,count++)/2;
+		}
 	}
-	if(d==1)  return D1;
-	else return TransferModalUnfoldings(D1,1,d,p,p,q);
+	D1 = TransferModalUnfoldings(D3,3,2,p,p,q)+TransferModalUnfoldings(D3,3,1,p,p,q);
+	if(d==3)  return TransferModalUnfoldings(D1,1,3,p,p,q);
+	else return D1;
+}
+//----------------------------------------------------------------**
+//***--------select covariates from grouped lasso ----------------**
+// [[Rcpp::export]]
+VectorXi selectedP2X(VectorXi coef, int p){	
+	int j, k, count=0;
+	double d0;
+	MatrixXd D = MatrixXd::Constant(p, p, 0);
+	VectorXi selectX;
+	VectorXd xsum;
+	selectX.setZero(p);	
+	for (j = 0; j < p; j++){
+		D(j,j) = 0.5*coef[count++];
+		for (k = j+1; k < p; k++)				
+			D(j,k) = coef[count++];
+	}
+	xsum = (D + D.transpose()).colwise().sum();
+	d0 = xsum.mean();
+	for(j = 0; j < p; j++) if(xsum[j]>d0) selectX[j] = 1;
+	return selectX;
+}
+//----------------------------------------------------------------**
+//***--------select covariates from grouped lasso ----------------**
+MatrixXi selectedX2P(VectorXi coef, int p){	
+	int j, k, count=0;
+	VectorXi p2 = VectorXi::Constant(p*(p+1)/2, 0);
+	for (j = 0; j < p; j++)
+		for (k = j; k < p; k++)				
+			p2[count++] = coef[j]*coef[k];	
+	return p2;
+}
+//----------------------------------------------------------------**
+//***--------Transfer the grouped estimator to tensor D3 ---------**
+// [[Rcpp::export]]
+MatrixXd selectedX2D(VectorXi coef, MatrixXd beta, int p, int q){	
+	int j, count=0, d, d1, d0 = p*(p+1)/2;
+	VectorXi p2, selectX;
+	MatrixXd beta1;	
+	
+	selectX  = selectedP2X(coef,p);
+	p2 = selectedX2P(selectX, p);	
+	d = selectX.sum();
+	d1 = d*(d+1)/2;
+	beta1.setZero(q,d1);
+	for (j = 0; j < d0; j++)
+		if(p2[j]!=0) beta1.col(count++) = beta.row(j);
+	return TransferP2T(beta1,3,d,q);
 }
 //----------------------------------------------------------------**
 //***----------------------derivative of F -----------------------------**
@@ -611,7 +608,6 @@ void derivF(MatrixXd &Gamma, MatrixXd Y, MatrixXd Z, MatrixXd U, MatrixXd alpha)
 		}
 	}
 }
-
 //----------------------------------------------------------------**
 //***--------------------setup tuning parameters------------------**
 // [[Rcpp::export]]
@@ -645,20 +641,14 @@ VectorXd setuplambda(MatrixXd Y, MatrixXd X, MatrixXd S, MatrixXd U, MatrixXd V,
 	}
 	return lambda;
 }
-
 //----------------------------------------------------------------**
 //***----update the jth row of matrix A with penalty--------------**
-VectorXd updateAj(VectorXd z, int n, int r1, double lambda, double alpha, double gamma, int penalty)
+VectorXd updateAj(VectorXd z, double lambda, double alpha, double gamma, int penalty)
 {
-	double znorm = 0;
-	int j;
-	VectorXd b = VectorXd::Constant(r1, 0);
-	znorm = z.norm();
+	double znorm = z.norm();
 	znorm = penalties(znorm, 1, lambda, alpha, gamma, penalty) / znorm;
-	for (j = 0; j<r1; j++) b[j] = znorm * z[j]/n;
-	return b;
+	return znorm * z;
 }
-
 //----------------------------------------------------------------**
 //***--------------------updateS----------------------------------**
 MatrixXd updateS(MatrixXd Y, MatrixXd Z, MatrixXd A, MatrixXd B, MatrixXd C)

@@ -1,12 +1,27 @@
 mqr_sparse <- 
-  function(Y,X,r1=NULL,r3=NULL,method="BIC",ncv=10,penalty="LASSO",isPenU=0,isPenColumn=1,lambda=NULL,SUV=NULL,
-           nlam=50,lam_min=1e-3,ftol=1e-6,max_step=20,max_step1=20,eps=1e-4,thresh=1e-4,gamma_pen=2,dfmax=NULL,alpha=1){
-    n <- dim(Y)[1]
-    q <- dim(Y)[2]
-    p <- dim(X)[2]
-    isSym=TRUE
-    intercept=FALSE
-    mu=NULL
+  function(Y,X0,r1=NULL,r3=NULL,method="BIC",ncv=10,penalty="LASSO",isPenU=0,isPenColumn=TRUE,
+           lambda=NULL,SUV=NULL,isSym=TRUE,initMethod="LASSO",nlam=50,lam_min=1e-3,ftol=1e-6,
+           max_step=20,max_step1=20,eps=1e-4,thresh=1e-4,gamma_pen=2,dfmax=NULL,alpha=1){
+    n <- nrow(Y)
+    q <- ncol(Y)
+
+    if(is.null(initMethod)){
+      p = ncol(X0)
+      Z = produceZ(X0)
+      selectX = rep(1,p)
+    }
+    else{
+      p0 <- ncol(X0)
+      X2 <- produceX2(X0)[,-1]
+      fit_mvr <- mvrcolwise(Y,X2,method="GCV",penalty=initMethod, isPenColumn=TRUE)
+      activeX = c(1,fit_mvr$activeX)
+      selectX <- selectedP2X(activeX, p0)
+      X = X0[,which(selectX==1)]
+      p <- ncol(X)
+      Z <- produceZ(X)
+      SUV <- NULL
+    }
+    
     if(is.null(r1)) r1 <- 2 
     if(is.null(r3)) r3 <- 2
     if(r3>q){ 
@@ -17,15 +32,14 @@ mqr_sparse <-
     if (penalty == "LASSO") pen <- 1
     if (penalty == "MCP")   pen <- 2 
     if (penalty=="SCAD"){    
-      gamma_pen <- 3
-      pen <- 3;
+      gamma_pen <- 3.7
+      pen <- 3
     }  
     if (gamma_pen <= 1 & penalty=="MCP") stop("gamma must be greater than 1 for the MC penalty")
     if (gamma_pen <= 2 & penalty=="SCAD") stop("gamma must be greater than 2 for the SCAD penalty")
     if (is.null(dfmax)) dfmax = p + 1
-    if(!intercept | is.null(mu)) mu = rep(0,q)
     opts = list(eps=eps,eps1=eps,utol=1e-4,ftol=ftol,Pitol=1e-4,tau_min=1e-3,eta=0.1,tiny=1e-13,gamma=0.85,rhols=1e-4,
-                max_step=max_step,max_step1=max_step1,isLR=1,n=n,r1=r1,r2=r2,r3=r3,p=p,q=q,onStiefel=1,intercept=intercept) 
+                max_step=max_step,max_step1=max_step1,isLR=1,n=n,r1=r1,r2=r2,r3=r3,p=p,q=q,onStiefel=1) 
     # initial A,B,C,S
     if(is.null(SUV)){
       set.seed(1)
@@ -38,13 +52,13 @@ mqr_sparse <-
       V = SUV$V
       S = SUV$S
     }
+    fit = Estimation(Y,Z,S,U,V,opts)
+    S = fit$S; U = fit$U; V = fit$V
     if (is.null(lambda)) {
       if (nlam < 1) stop("nlambda must be at least 1")
       if (n<=p) lam_min = 1e-2
       setlam = c(1,lam_min,alpha,nlam)
-      fit = Estimation(Y,X,S,U,V,mu,opts)
-      S = fit$S; U = fit$U; V = fit$V;
-      lambda = setuplambda(Y,X,S,U,V,isPenU,nlam,setlam)
+      lambda = setuplambda(Y,Z,S,U,V,isPenU,nlam,setlam)
     }
     else  nlam = length(lambda)
     opts_pen = list(pen=pen,nlam=nlam,lam_max=1,lam_min=lam_min,gamma_pen=gamma_pen,alpha=alpha,dfmax=dfmax,gamma_tanh=1000,
@@ -52,12 +66,12 @@ mqr_sparse <-
     #---------------- The selection by BIC or CV  ---------------------# 
     if(method!="CV"){
       if(isPenColumn)
-        if(isSym) fit = EstPenColumn(Y,X,S,U,V,lambda,opts,opts_pen) 
-        else fit = EstUnconstrPen(Y,X,S,U,U,V,lambda,mu,opts,opts_pen) 
+        if(isSym) fit = EstPenColumn(Y,Z,S,U,V,lambda,opts,opts_pen) 
+        else fit = EstUnconstrPen(Y,Z,S,U,U,V,lambda,mu,opts,opts_pen) 
       else
-        fit = EstPenSingle(Y,X,S,U,V,lambda,opts,opts_pen) 
+        fit = EstPenSingle(Y,Z,S,U,V,lambda,opts,opts_pen) 
       df = fit$df*r1
-      loglikelih = (n*q)*log(fit$likhd/(n*q))
+      loglikelih =  n*q * log(fit$likhd/(n*q))
       bic <- switch (method,
                      BIC = loglikelih + log(n*q)*df,
                      AIC = loglikelih + 2*df,
@@ -73,34 +87,39 @@ mqr_sparse <-
       Snew=matrix(fit$Spath[,selected],nrow=r3)
     }
     if(method=="CV"&&nlam>1){
-      len_cv = ceiling(n/ncv)
+      len_cv = floor(n/ncv)
       RSS = rep(0,nlam)
       for(jj in 1:ncv){
         cv.id = ((jj-1)*len_cv+1):(jj*len_cv)
         if(jj==ncv) cv.id = ((jj-1)*len_cv+1):n
         Ytrain = Y[-cv.id,]
-        Xtrain = X[-cv.id,]
+        Xtrain = Z[-cv.id,]
         Ytest = Y[cv.id,]
-        Xtest = X[cv.id,]
+        Xtest = Z[cv.id,]
         if(isPenColumn){
           if(isSym) fit = EstPenColumn(Ytrain,Xtrain,S,U,V,lambda,opts,opts_pen)
-          else  fit = EstUnconstrPen(Ytrain,Xtrain,S,U,U,V,lambda,mu,opts,opts_pen) 
+          else  fit = EstUnconstrPen(Ytrain,Xtrain,S,U,U,V,lambda,opts,opts_pen) 
         }
-        else
-          fit = EstPenSingle(Ytrain,Xtrain,S,U,V,lambda,opts,opts_pen) 
-        Dnew = fit$V %*% fit$S %*% t(kroneckerProduct(fit$U, fit$U))
-        RSS = RSS + sum((Ytest-produceZ(Xtest)%*%t(Dnew))^2)/2
+        else  fit = EstPenSingle(Ytrain,Xtrain,S,U,V,lambda,opts,opts_pen) 
+        for(kk in 1:nlam){
+          Unew=matrix(fit$Upath[,kk],nrow=p)
+          Vnew=matrix(fit$Vpath[,kk],nrow=q)
+          Snew=matrix(fit$Spath[,kk],nrow=r3) 
+          Dnew = Vnew %*% Snew %*% t(kronecker(Unew, Unew))
+          RSS[kk] = RSS[kk] + sum((Ytest-Xtest%*%t(Dnew))^2)
+        }
+        
       } 
       selected = which.min(RSS)
       lambda_opt = lambda[selected]
       
       if(isPenColumn){
-        if(isSym)  fit_opt = EstPenColumn(Y,X,as.matrix(S),as.matrix(U),as.matrix(V),lambda[1:selected],opts,opts_pen)
-        else  fit_opt = EstUnconstrPen(Y,X,as.matrix(S),as.matrix(U),as.matrix(U),as.matrix(V),lambda[1:selected],mu,opts,opts_pen)
+        if(isSym)  fit_opt = EstPenColumn(Y,Z,as.matrix(S),as.matrix(U),as.matrix(V),lambda[1:selected],opts,opts_pen)
+        else  fit_opt = EstUnconstrPen(Y,Z,as.matrix(S),as.matrix(U),as.matrix(U),as.matrix(V),lambda[1:selected],opts,opts_pen)
         activeF = activeX = fit_opt$betapath[,selected]
       }
       else{
-        fit_opt = EstPenSingle(Y,X,as.matrix(S),as.matrix(U),as.matrix(V),lambda[1:selected],opts,opts_pen)
+        fit_opt = EstPenSingle(Y,Z,as.matrix(S),as.matrix(U),as.matrix(V),lambda[1:selected],opts,opts_pen)
         activeF = matrix(fit_opt$betapath[,selected],q,p)
         activeX = fit_opt$activeXpath[,selected]
       }
@@ -110,11 +129,11 @@ mqr_sparse <-
     }
     if(method=="CV"&&nlam==1){
       if(isPenColumn){
-        if(isSym)  fit = EstPenColumn(Y,X,S,U,V,lambda,opts,opts_pen)
-        else   fit = EstUnconstrPen(Y,X,S,U,U,V,lambda,mu,opts,opts_pen) 
+        if(isSym)  fit = EstPenColumn(Y,Z,S,U,V,lambda,opts,opts_pen)
+        else   fit = EstUnconstrPen(Y,Z,S,U,U,V,lambda,mu,opts,opts_pen) 
       }
       else
-        fit = EstPenSingle(Y,X,S,U,V,lambda,opts,opts_pen) 
+        fit = EstPenSingle(Y,Z,S,U,V,lambda,opts,opts_pen) 
       selected = 1
       Unew=matrix(fit$Upath,nrow=p)
       Vnew=matrix(fit$Vpath,nrow=q)
@@ -122,6 +141,7 @@ mqr_sparse <-
       lambda_opt = lambda
       activeX = activeF = fit$betapath
     }
+    
     return(list(betapath=fit$betapath, 
                 rss=fit$likhd[selected],
                 df = fit$df,
@@ -130,11 +150,12 @@ mqr_sparse <-
                 selectedID = selected,
                 activeF = activeF,
                 activeX = activeX,
+                Xselect = which(selectX==1),
                 Unew=Unew,
                 Vnew=Vnew,
                 Snew=Snew,
                 Y = Y,
-                X = X
+                X = X0
                 )
            )
   }

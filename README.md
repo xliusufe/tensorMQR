@@ -19,14 +19,54 @@
 
     library(tensorMQR1)
 
-    D3 <- matrix(runif(108, 0.7, 1), 3, 36)
-    mydata <- generateData(200, 3, 6, 6, D3)    
+    # Example 1
+    # The usage of function "mqr()"
+	n <- 200
+    p <- 6
+    q <- 3	
+    D3 <- matrix(runif(q*p^2, 0.7, 1), q, p^2)
+    mydata <- generateData(n, q, p, p, D3)    
     fit <- mqr(mydata$Y, mydata$X)
-    coeff <- fit$Dnew
+    D3hat <- fit$Dnew
+	D2hat <- TransferModalUnfoldings(D3hat,3,2,p,K,q)
     
+    # Example 2
+    # The usage of function "mqr_dr()"	
     fit_dr <- mqr_dr(mydata$Y, mydata$X)
+    D3hat <- fit_dr$Dnew
+	D2hat <- TransferModalUnfoldings(D3hat,3,2,p,K,q)	
     opt <- fit_dr$rk_opt
  
+    # Example 3 
+    # The usage of function "mvrblockwise()"
+    n <- 200
+    q <- 5
+    s <- 3
+    p <- 100
+    B <- matrix(runif(q*s, 2,3), s)
+    X <- matrix(rnorm(n*p),n,p)
+    Y <- X[,1:s]%*%B + matrix(rnorm(n*q),n)
+    fit <- mvrblockwise(Y,X) #See details in the function "mvrblockwise"
+    fit$activeX
+    fit$Bhat
+    which(rowSums(fit$Bhat^2)>0)
+    fit$muhat
+    
+    # Example 4
+    # The usage of function "mvrcolwise()"
+    n <- 200
+    q <- 5
+    s <- 3
+    p <- 100
+    B <- matrix(runif(q*s, 2,3), s)
+    X <- matrix(rnorm(n*p),n,p)
+    Y <- X[,1:s]%*%B + matrix(rnorm(n*q),n)
+    fit <- mvrcolwise(Y,X) #See details in the function "mvrcolwise"
+    fit$activeX
+    fit$Bhat
+    which(rowSums(fit$Bhat^2)>0)
+    fit$muhat 
+	
 # References
 
 Symmetric Tensor Estimation for Quadratic Regression. Manuscript.

@@ -1,11 +1,11 @@
 
 ##--------------Estimation with Penalty by CV----------------------##
-mqr_sparse_cv <- function(Y,X,ncv,r1_index,r3_index,S,U,V,lambda,isSym,mu,opts,opts_pen){
+mqr_sparse_cv <- function(Y,X,ncv,r1_index,r3_index,S,U,V,lambda,isSym,opts,opts_pen){
     p <- opts$p
     q <- opts$q
     n <- opts$n
     nlam <- opts_pen$nlam
-    len_cv = ceiling(n/ncv)
+    len_cv = floor(n/ncv)
     RSS = matrix(0,nlam,length(r1_index)*length(r3_index))
     likhd = rep(0,nlam)
     for(jj in 1:ncv){ # start CV
@@ -15,9 +15,6 @@ mqr_sparse_cv <- function(Y,X,ncv,r1_index,r3_index,S,U,V,lambda,isSym,mu,opts,o
       Xtrain = X[-cv.id,]
       Ytest = Y[cv.id,]
       Xtest = X[cv.id,]
-      Ztest = produceZ(Xtest)
-      nt = nrow(Ytest)
-      
       RSS0 = NULL
       for(r3 in r3_index){
         opts$r3 = r3
@@ -29,7 +26,7 @@ mqr_sparse_cv <- function(Y,X,ncv,r1_index,r3_index,S,U,V,lambda,isSym,mu,opts,o
               fit = EstPenColumn(Ytrain,Xtrain,as.matrix(S[1:r3,1:(r1^2)]),as.matrix(U[,1:r1]),as.matrix(V[,1:r3]),lambda,opts,opts_pen) 
             else
               fit = EstUnconstrPen(Ytrain,Xtrain,as.matrix(S[1:r3,1:(r1^2)]),as.matrix(U[,1:r1]),as.matrix(U[,1:r1]),
-                                   as.matrix(V[,1:r3]),lambda,mu,opts,opts_pen)
+                                   as.matrix(V[,1:r3]),lambda,opts,opts_pen)
             df = r1*(r1+1)*r3/2 + fit$df*r1 + q*r3 - r1^2-r3^2/2
             }
           else{
@@ -41,7 +38,7 @@ mqr_sparse_cv <- function(Y,X,ncv,r1_index,r3_index,S,U,V,lambda,isSym,mu,opts,o
             Vnew=matrix(fit$Vpath[,kk],nrow=q)
             Snew=matrix(fit$Spath[,kk],nrow=r3) 
             Dnew = Vnew %*% Snew %*% t(kronecker(Unew, Unew))
-            likhd[kk] = sum((Ytest-Ztest%*%t(Dnew))^2)/2
+            likhd[kk] = sum((Ytest-Xtest%*%t(Dnew))^2)/2
           }
           RSS0 = cbind(RSS0,likhd)
         }
@@ -67,7 +64,7 @@ mqr_sparse_cv <- function(Y,X,ncv,r1_index,r3_index,S,U,V,lambda,isSym,mu,opts,o
         fit_opt = EstPenColumn(Y,X,as.matrix(S[1:r3_opt,1:(r1_opt^2)]),as.matrix(U[,1:r1_opt]),as.matrix(V[,1:r3_opt]),lambda,opts,opts_pen) 
       else
         fit_opt = EstUnconstrPen(Y,X,as.matrix(S[1:r3_opt,1:(r1_opt^2)]),as.matrix(U[,1:r1_opt]),as.matrix(U[,1:r1_opt]),
-                                 as.matrix(V[,1:r3_opt]),lambda,mu,opts,opts_pen)
+                                 as.matrix(V[,1:r3_opt]),lambda,opts,opts_pen)
       activeF = activeX = fit_opt$betapath[,qj1]
     }
     else{
@@ -90,9 +87,7 @@ mqr_sparse_cv <- function(Y,X,ncv,r1_index,r3_index,S,U,V,lambda,isSym,mu,opts,o
                 Unew=Unew,
                 Vnew=Vnew,
                 Snew=Snew,
-                rk_opt=c(r1_opt,r3_opt),
-                Y = Y,
-                X = X
+                rk_opt=c(r1_opt,r3_opt)
     )
     )
   }

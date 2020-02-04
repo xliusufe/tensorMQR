@@ -26,9 +26,11 @@
   \item{SUV}{A user-specified list of initial coefficient matrix of \eqn{S},
               \eqn{U}, \eqn{V}. By default, initial matrices are provided randomly.}
 
-  \item{isSym}{A logical value indicating whether restrict tensor to be symmetric. If isSym is \code{TRUE} (the default),  the core tensor 
-             is symmetric, and both \eqn{U} and \eqn{V} belong to Stiefel manifold. If isSym is \code{FALSE}, we decompose 
-             the tensor to \eqn{S}, \eqn{A}, \eqn{B}, \eqn{C}, where the tensor is treated  as being asymmetric.}
+  \item{isSym}{A logical value indicating whether restrict tensor to be symmetric. If isSym is \code{TRUE} (the default), 
+             we decompose the tensor to be \eqn{D_{(3)}=VS_{(3)}(U\otimes U)^T}, where the core tensor \eqn{S} is symmetric, 
+             and both \eqn{U} and \eqn{V} belong to Stiefel manifold. If isSym is \code{FALSE}, we decompose 
+             the tensor to \eqn{S}, \eqn{A}, \eqn{B}, \eqn{C}, that is \eqn{D_{(3)}=CS_{(3)}(B\otimes A)^T}, 
+             where the tensor is treated  as being asymmetric.}
              
   \item{eps}{Convergence threshhold.  The algorithm iterates until the
         loss function change in any coefficient is less than \code{eps}.  

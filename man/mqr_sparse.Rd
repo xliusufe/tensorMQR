@@ -10,9 +10,9 @@
 }
 
 \usage{
-mqr_sparse(Y, X, r1 = NULL, r3 = NULL, method = "BIC", ncv = 10, isPenU = 0, 
-           isPenColumn = 1, penalty = "LASSO", lambda = NULL, SUV = NULL,  
-           nlam = 50, lam_min = 1e-4, ftol = 1e-6, maxstep = 20,  maxstep1 = 20, 
+mqr_sparse(Y, X, r1 = NULL, r3 = NULL, method = "BIC", ncv = 10, isPenU = 0, isPenColumn = 1, 
+           penalty = "LASSO", lambda = NULL, SUV = NULL,  nlam = 50,isSym=TRUE, 
+           initMethod="LASSO", lam_min = 1e-4, ftol = 1e-6, maxstep = 20,  maxstep1 = 20, 
            eps = 1e-4,  thresh=1e-4, gamma_pen = 2,  dfmax = NULL, alpha = 1)
 }
 %- maybe also 'usage' for other objects documented here.
@@ -48,9 +48,18 @@ mqr_sparse(Y, X, r1 = NULL, r3 = NULL, method = "BIC", ncv = 10, isPenU = 0,
         
   \item{SUV}{A user-specified list of initial coefficient matrix of \eqn{S},
               \eqn{U}, \eqn{V}. By default, initial matrices are provided randomly.}
-              
-  \item{nlam}{The number of lambda values. Default is 20.}
    
+  \item{isSym}{A logical value indicating whether restrict tensor to be symmetric. If isSym is \code{TRUE} (the default), 
+             we decompose the tensor to be \eqn{D_{(3)}=VS_{(3)}(U\otimes U)^T}, where the core tensor \eqn{S} is symmetric, 
+             and both \eqn{U} and \eqn{V} belong to Stiefel manifold. If isSym is \code{FALSE}, we decompose 
+             the tensor to \eqn{S}, \eqn{A}, \eqn{B}, \eqn{C}, that is \eqn{D_{(3)}=CS_{(3)}(B\otimes A)^T}, 
+             where the tensor is treated  as being asymmetric.}
+  
+  \item{initMethod}{One can estimate the initial tensor \eqn{D_{(3)}} as a metrix by choosing a penalty to penalize group-column wise. \code{initMethod}
+                    can be \code{LASSO}, \code{MCP} or \code{SCAD}. The default is \code{LASSO}.}     
+   
+  \item{nlam}{The number of lambda values. Default is 20.}
+  
   \item{lam_min}{The smallest value for lambda, as a fraction of
                  lambda.max.  Default is 1e-3.}
                  

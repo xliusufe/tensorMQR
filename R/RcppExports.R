@@ -17,12 +17,20 @@ produceX2 <- function(X) {
     .Call(`_tensorMQR1_produceX2`, X)
 }
 
-TransferT2P <- function(D3, d, p, q) {
-    .Call(`_tensorMQR1_TransferT2P`, D3, d, p, q)
+TransferT2P <- function(D, d, p, q) {
+    .Call(`_tensorMQR1_TransferT2P`, D, d, p, q)
 }
 
 TransferP2T <- function(coef, d, p, q) {
     .Call(`_tensorMQR1_TransferP2T`, coef, d, p, q)
+}
+
+selectedP2X <- function(coef, p) {
+    .Call(`_tensorMQR1_selectedP2X`, coef, p)
+}
+
+selectedX2D <- function(coef, beta, p, q) {
+    .Call(`_tensorMQR1_selectedX2D`, coef, beta, p, q)
 }
 
 setuplambda <- function(Y, X, S, U, V, isPenU, nlam, setlam) {
@@ -33,19 +41,51 @@ EstFR <- function(Y, X) {
     .Call(`_tensorMQR1_EstFR`, Y, X)
 }
 
-EstUnconstr <- function(Y, X, S, A, B, C, mu, optsList) {
-    .Call(`_tensorMQR1_EstUnconstr`, Y, X, S, A, B, C, mu, optsList)
+setuplambdaMVR_colwise <- function(Y, Z, nlam, setlam) {
+    .Call(`_tensorMQR1_setuplambdaMVR_colwise`, Y, Z, nlam, setlam)
 }
 
-Estimation <- function(Y, X, S, U, V, mu, optsList) {
-    .Call(`_tensorMQR1_Estimation`, Y, X, S, U, V, mu, optsList)
+setuplambdaMVR_lasso <- function(Y, Z, nlam, setlam) {
+    .Call(`_tensorMQR1_setuplambdaMVR_lasso`, Y, Z, nlam, setlam)
 }
 
-EstPenColumn <- function(Y, X, S, U, V, lambda, optsList, optsList_pen) {
-    .Call(`_tensorMQR1_EstPenColumn`, Y, X, S, U, V, lambda, optsList, optsList_pen)
+setuplambdaMVR_blockwise <- function(Y, Z, nlam, setlam, lengths) {
+    .Call(`_tensorMQR1_setuplambdaMVR_blockwise`, Y, Z, nlam, setlam, lengths)
 }
 
-EstPenSingle <- function(Y, X, S, U, V, lambda, optsList, optsList_pen) {
-    .Call(`_tensorMQR1_EstPenSingle`, Y, X, S, U, V, lambda, optsList, optsList_pen)
+setuplambdaMVR_glasso <- function(Y, Z, nlam, setlam, lengths) {
+    .Call(`_tensorMQR1_setuplambdaMVR_glasso`, Y, Z, nlam, setlam, lengths)
+}
+
+EstMVR_colwise <- function(Y, Z, W, lambda, optsList, optsList_pen) {
+    .Call(`_tensorMQR1_EstMVR_colwise`, Y, Z, W, lambda, optsList, optsList_pen)
+}
+
+EstMVR_lasso <- function(Y, Z1, W, lambda, optsList, optsList_pen) {
+    .Call(`_tensorMQR1_EstMVR_lasso`, Y, Z1, W, lambda, optsList, optsList_pen)
+}
+
+EstMVR_blockwise <- function(Y, Z, W, lambda, lengths, optsList, optsList_pen) {
+    .Call(`_tensorMQR1_EstMVR_blockwise`, Y, Z, W, lambda, lengths, optsList, optsList_pen)
+}
+
+EstMVR_glasso <- function(Y, Z, W, lambda, lengths, optsList, optsList_pen) {
+    .Call(`_tensorMQR1_EstMVR_glasso`, Y, Z, W, lambda, lengths, optsList, optsList_pen)
+}
+
+EstUnconstr <- function(Y, Z, S, A, B, C, optsList) {
+    .Call(`_tensorMQR1_EstUnconstr`, Y, Z, S, A, B, C, optsList)
+}
+
+Estimation <- function(Y, Z, S, U, V, optsList) {
+    .Call(`_tensorMQR1_Estimation`, Y, Z, S, U, V, optsList)
+}
+
+EstPenColumn <- function(Y, Z, S, U, V, lambda, optsList, optsList_pen) {
+    .Call(`_tensorMQR1_EstPenColumn`, Y, Z, S, U, V, lambda, optsList, optsList_pen)
+}
+
+EstPenSingle <- function(Y, Z, S, U, V, lambda, optsList, optsList_pen) {
+    .Call(`_tensorMQR1_EstPenSingle`, Y, Z, S, U, V, lambda, optsList, optsList_pen)
 }
 
